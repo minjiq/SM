@@ -30,7 +30,7 @@ function InflowTooltip({ active, payload, label }) {
       <div className="mb-1 font-semibold text-[#0F172A]">{label}</div>
       <div className="text-[#64748B]">
         총 유입 <b className="tabular-nums text-[#0F172A]">{total}</b>건 · 자동배부{" "}
-        <b className="tabular-nums text-[#0B4171]">{auto}</b>건
+        <b className="tabular-nums text-[#17288B]">{auto}</b>건
       </div>
     </div>
   );
@@ -70,12 +70,12 @@ function InflowChart({ line, onLineChange }) {
           <YAxis hide />
           <Tooltip content={<InflowTooltip />} cursor={{ fill: "#F8FAFC" }} />
           <Bar dataKey="total" stackId="a" fill="#E2E8F0" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="auto" stackId="b" fill="#0B4171" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="auto" stackId="b" fill="#17288B" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <div className="mt-4 flex gap-5 text-[11.5px] font-medium text-[#64748B]">
         <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#E2E8F0]" />총 유입</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#0B4171]" />자동배부 완료</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#17288B]" />자동배부 완료</span>
       </div>
     </Card>
   );
@@ -117,7 +117,7 @@ function ConfidenceCard({ threshold, onThreshold }) {
           />
           <Bar dataKey="count" radius={[4, 4, 0, 0]}>
             {confidenceHistogram.map((entry) => (
-              <Cell key={entry.bin} fill={entry.bin >= threshold ? "#0B4171" : "#E2E8F0"} />
+              <Cell key={entry.bin} fill={entry.bin >= threshold ? "#17288B" : "#E2E8F0"} />
             ))}
           </Bar>
         </BarChart>
@@ -130,7 +130,7 @@ function ConfidenceCard({ threshold, onThreshold }) {
           max={95}
           value={threshold}
           onChange={(e) => onThreshold(Number(e.target.value))}
-          className="flex-1 accent-[#0B4171] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B4171]/30"
+          className="flex-1 accent-[#17288B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17288B]/30"
         />
         <b className="tabular-nums text-[#0F172A]">{threshold}%</b>
       </div>
@@ -293,7 +293,7 @@ export function Dashboard() {
         </span>
         <button
           type="button"
-          className="ml-auto shrink-0 rounded-[10px] bg-[#0B4171] px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-[#0D4D85] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B4171]/40 focus-visible:ring-offset-2"
+          className="ml-auto shrink-0 rounded-[10px] border border-[#DC2626] px-4 py-2.5 text-[13px] font-semibold text-[#DC2626] transition-all hover:bg-[#DC2626] hover:text-white active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626]/40 focus-visible:ring-offset-2"
         >
           예외 검수 화면 바로가기 →
         </button>

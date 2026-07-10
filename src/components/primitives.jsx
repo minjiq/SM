@@ -39,9 +39,9 @@ export function Chip({ active, children, ...props }) {
   return (
     <button
       type="button"
-      className={`rounded-full px-4 py-[7px] text-[12.5px] font-semibold transition-all active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B4171]/30 focus-visible:ring-offset-2 ${
+      className={`rounded-full px-4 py-[7px] text-[12.5px] font-semibold transition-all active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17288B]/30 focus-visible:ring-offset-2 ${
         active
-          ? "bg-[#0B4171] text-white"
+          ? "bg-[#17288B] text-white"
           : "bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] hover:text-[#0F172A]"
       }`}
       {...props}
@@ -56,8 +56,8 @@ export function IconChip({ tone = "primary", children }) {
     tone === "danger"
       ? "bg-[#FEF2F2] text-[#DC2626]"
       : tone === "accent"
-      ? "bg-[#EFF6FF] text-[#2563EB]"
-      : "bg-[#EAF1F8] text-[#0B4171]";
+      ? "bg-[#EEF1FC] text-[#3B54D9]"
+      : "bg-[#E9ECFA] text-[#17288B]";
   return <div className={`grid h-10 w-10 place-items-center rounded-[12px] ${toneClass}`}>{children}</div>;
 }
 
