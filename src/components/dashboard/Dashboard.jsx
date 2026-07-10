@@ -100,6 +100,14 @@ function SubNavRow() {
   );
 }
 
+const TODO_DOT_COLOR = { red: "#DC2626", amber: "#F59E0B", green: "#10B981" };
+
+function TodoLabel() {
+  return (
+    <div className="mb-2.5 text-[12px] font-semibold text-[#94A3B8]">지금 처리할 업무</div>
+  );
+}
+
 function TodoStrip() {
   return (
     <div className="mb-5 flex flex-wrap items-center gap-x-9 gap-y-3">
@@ -108,6 +116,7 @@ function TodoStrip() {
           key={item.label}
           className={`flex items-center gap-2.5 text-[12.5px] ${i > 0 ? "border-l border-[#E2E8F0] pl-9" : ""}`}
         >
+          <i className="h-2 w-2 shrink-0 rounded-full" style={{ background: TODO_DOT_COLOR[item.tone] }} />
           <span className="font-bold text-[#0F172A]">{item.label}</span>
           <span className={`text-[20px] font-extrabold tabular-nums leading-none ${TODO_COUNT_TONE[item.tone]}`}>
             {item.count}
@@ -121,26 +130,6 @@ function TodoStrip() {
             {item.action}
           </button>
         </div>
-      ))}
-    </div>
-  );
-}
-
-function LegendRow() {
-  const items = [
-    { color: "#DC2626", label: "긴급/위험 — 즉시 조치" },
-    { color: "#F59E0B", label: "주의 — 모니터링 강화" },
-    { color: "#17288B", label: "정보 — 참고" },
-    { color: "#10B981", label: "양호 — 정상 운영" },
-  ];
-  return (
-    <div className="mb-5 flex flex-wrap items-center gap-5 text-[12px] text-[#64748B]">
-      <span className="font-semibold text-[#94A3B8]">중요도 표시:</span>
-      {items.map((it) => (
-        <span key={it.label} className="flex items-center gap-1.5">
-          <i className="inline-block h-2 w-2 rounded-full" style={{ background: it.color }} />
-          {it.label}
-        </span>
       ))}
     </div>
   );
@@ -592,8 +581,8 @@ export function Dashboard() {
       </div>
 
       <SubNavRow />
+      <TodoLabel />
       <TodoStrip />
-      <LegendRow />
 
       <div className="mb-6 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
         <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
