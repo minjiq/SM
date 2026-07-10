@@ -10,7 +10,7 @@ export function DesignIntent({ question, children, ids }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-[12.5px] font-semibold transition-colors ${
-          open ? "bg-[#E9ECFA] text-[#17288B]" : "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]"
+          open ? "bg-[#E9ECFA] text-[#122590]" : "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]"
         }`}
       >
         <Lightbulb className="h-3.5 w-3.5" />

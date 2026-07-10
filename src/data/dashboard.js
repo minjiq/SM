@@ -180,7 +180,7 @@ export const orgTable = [
 export const orgNote = "냉난방: 폭염 신규 유형 유입으로 AI 확신도 하락 → AI 학습현황에서 재학습 필요";
 
 export const orgShare = [
-  { label: "고객센터", pct: 33, color: "#17288B" },
+  { label: "고객센터", pct: 33, color: "#122590" },
   { label: "시설", pct: 25, color: "#2C3FA0" },
   { label: "전동차", pct: 21, color: "#4A5FBC" },
   { label: "승강기", pct: 9, color: "#7189D6" },

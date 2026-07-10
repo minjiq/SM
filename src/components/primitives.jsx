@@ -1,9 +1,10 @@
 import { badgeTone } from "../design/tokens";
 
-export function Card({ title, meta, action, children, className = "", padding = "p-8" }) {
+export function Card({ title, meta, action, children, className = "", padding = "p-8", style }) {
   return (
     <section
       className={`rounded-[20px] bg-white ${padding} shadow-[0_1px_3px_0_rgba(15,23,42,0.06),0_1px_2px_-1px_rgba(15,23,42,0.04)] ${className}`}
+      style={style}
     >
       {(title || action) && (
         <div className="mb-5 flex items-start justify-between gap-4">
@@ -39,9 +40,9 @@ export function Chip({ active, children, ...props }) {
   return (
     <button
       type="button"
-      className={`rounded-full px-4 py-[7px] text-[12.5px] font-semibold transition-all active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17288B]/30 focus-visible:ring-offset-2 ${
+      className={`rounded-full px-4 py-[7px] text-[12.5px] font-semibold transition-all active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#122590]/30 focus-visible:ring-offset-2 ${
         active
-          ? "bg-[#17288B] text-white"
+          ? "bg-[#122590] text-white"
           : "bg-[#F1F5F9] text-[#64748B] hover:bg-[#E2E8F0] hover:text-[#0F172A]"
       }`}
       {...props}
@@ -57,7 +58,7 @@ export function IconChip({ tone = "primary", children }) {
       ? "bg-[#FEF2F2] text-[#DC2626]"
       : tone === "amber"
       ? "bg-[#FFFBEB] text-[#B45309]"
-      : "bg-[#E9ECFA] text-[#17288B]";
+      : "bg-[#E9ECFA] text-[#122590]";
   return <div className={`grid h-10 w-10 place-items-center rounded-[12px] ${toneClass}`}>{children}</div>;
 }
 

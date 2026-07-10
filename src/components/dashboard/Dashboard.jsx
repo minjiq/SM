@@ -35,7 +35,7 @@ function InflowTooltip({ active, payload, label }) {
       <div className="mb-1 font-semibold text-[#0F172A]">{label}</div>
       <div className="text-[#64748B]">
         총 유입 <b className="tabular-nums text-[#0F172A]">{total}</b>건 · 자동배부{" "}
-        <b className="tabular-nums text-[#17288B]">{auto}</b>건
+        <b className="tabular-nums text-[#122590]">{auto}</b>건
       </div>
     </div>
   );
@@ -68,7 +68,7 @@ function SubNavRow() {
             onClick={() => setChannel(c)}
             className={`rounded-[10px] px-4 py-2 text-[13px] font-semibold transition-colors ${
               channel === c
-                ? "bg-[#17288B] text-white"
+                ? "bg-[#122590] text-white"
                 : "bg-white text-[#64748B] shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] hover:text-[#0F172A]"
             }`}
           >
@@ -84,7 +84,7 @@ function SubNavRow() {
               type="button"
               onClick={() => setPeriod(p)}
               className={`rounded-full px-4 py-1.5 text-[12.5px] font-semibold transition-colors ${
-                period === p ? "bg-[#17288B] text-white" : "text-[#64748B] hover:text-[#0F172A]"
+                period === p ? "bg-[#122590] text-white" : "text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
               {p}
@@ -174,7 +174,18 @@ function ProcessingFlow() {
   const { total, autoComplete, exception, failed, unprocessed, avgWaitSec } = aiProcessing;
 
   return (
-    <Card title="AI 처리 흐름" meta="각 상태별로 '무엇을 하면 되는지'가 함께 보이도록 구성" className="mb-6">
+    <Card
+      title="AI 처리 흐름"
+      meta="각 상태별로 '무엇을 하면 되는지'가 함께 보이도록 구성"
+      className="mb-6"
+      style={{
+        border: "1.5px solid transparent",
+        backgroundImage:
+          "linear-gradient(#fff, #fff), linear-gradient(120deg, #9DB0E6, #C6D0F1 45%, #E9ECFA)",
+        backgroundOrigin: "border-box",
+        backgroundClip: "padding-box, border-box",
+      }}
+    >
       <div className="flex flex-wrap items-center gap-5">
         <FlowStep label="① 접수" value={`${total.toLocaleString()}건`} sub="3개 채널 통합 유입" />
         <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
@@ -313,7 +324,7 @@ function ProportionBars({ title, meta, items, maxOf, footer }) {
             </div>
             <div className="h-2 rounded-full bg-[#F1F5F9]">
               <div
-                className={`h-2 rounded-full ${item.tone === "hot" ? "bg-[#DC2626]" : "bg-[#17288B]"}`}
+                className={`h-2 rounded-full ${item.tone === "hot" ? "bg-[#DC2626]" : "bg-[#122590]"}`}
                 style={{ width: `${(item.count / max) * 100}%` }}
               />
             </div>
@@ -327,11 +338,7 @@ function ProportionBars({ title, meta, items, maxOf, footer }) {
   );
 }
 
-const TIER_CARD_TONE = {
-  green: "border-[#9DC9A0] bg-[#F6FAF6] text-[#2E7D32]",
-  amber: "border-[#EEC089] bg-[#FDFAF4] text-[#B45309]",
-  red: "border-[#E5A3A3] bg-[#FDF6F6] text-[#DC2626]",
-};
+const TIER_TEXT_TONE = { green: "text-[#2E7D32]", amber: "text-[#B45309]", red: "text-[#DC2626]" };
 const TIER_BAR_COLOR = { green: "#C8E0C9", amber: "#F0B070", red: "#E08A8A" };
 const TIER_BAR_TEXT = { green: "#1E4D20", amber: "#5C3A00", red: "#FFFFFF" };
 
@@ -349,13 +356,15 @@ function ConfidenceTiersCard() {
           </div>
         ))}
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-2.5">
+      <div className="mt-1">
         {confidenceTiers.map((t) => (
-          <div key={t.key} className={`rounded-[8px] border-[1.5px] px-3 py-2.5 text-[11px] leading-[1.5] ${TIER_CARD_TONE[t.tone]}`}>
-            <div className="mb-0.5 text-[11.5px] font-extrabold">
-              {t.emoji} {t.label}
-            </div>
-            <div className="mb-1 text-[16px] font-extrabold tabular-nums">{t.count.toLocaleString()}건</div>
+          <div key={t.key} className="flex items-center gap-3 border-t border-[#F1F5F9] py-3 text-[12px] first:border-t-0">
+            <span className="w-[150px] shrink-0 text-[12.5px] font-extrabold">
+              {t.emoji} <span className={TIER_TEXT_TONE[t.tone]}>{t.label}</span>
+            </span>
+            <span className="w-[68px] shrink-0 text-[16px] font-extrabold tabular-nums text-[#0F172A]">
+              {t.count.toLocaleString()}건
+            </span>
             <span className="text-[#64748B]">{t.desc}</span>
           </div>
         ))}
@@ -370,8 +379,8 @@ function ConfidenceTiersCard() {
 function UrgentAlertsCard() {
   const pinned = urgentAlerts.filter((a) => a.pinned);
   const rest = urgentAlerts.filter((a) => !a.pinned);
-  const toneBox = { red: "border-[#DC2626] bg-[#FEF2F2]", amber: "border-[#F59E0B]/40 bg-white", blue: "border-[#17288B]/30 bg-white" };
-  const toneDot = { red: "#DC2626", amber: "#F59E0B", blue: "#17288B" };
+  const toneBox = { red: "border-[#DC2626] bg-[#FEF2F2]", amber: "border-[#F59E0B]/40 bg-white", blue: "border-[#122590]/30 bg-white" };
+  const toneDot = { red: "#DC2626", amber: "#F59E0B", blue: "#122590" };
   const toneBadge = { amber: "amber", blue: "blue" };
 
   return (
@@ -439,12 +448,12 @@ function InflowChart({ line, onLineChange }) {
           <YAxis hide />
           <Tooltip content={<InflowTooltip />} cursor={{ fill: "#F8FAFC" }} />
           <Bar dataKey="total" stackId="a" fill="#E2E8F0" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="auto" stackId="b" fill="#17288B" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="auto" stackId="b" fill="#122590" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
       <div className="mt-4 flex gap-5 text-[11.5px] font-medium text-[#64748B]">
         <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#E2E8F0]" />총 유입</span>
-        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#17288B]" />자동배부 완료</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#122590]" />자동배부 완료</span>
       </div>
     </Card>
   );
