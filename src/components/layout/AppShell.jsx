@@ -25,15 +25,9 @@ export function AppShell({ active, onChange, children }) {
           </div>
         </div>
         <span className="ml-2 text-[15px] font-bold text-[#0F172A]">민원 자동배부 대시보드</span>
-        <div className="ml-auto flex items-center gap-6">
-          <div className="text-right text-[12px] leading-tight text-[#94A3B8]">
-            <div>{todaySummary.updatedAt}</div>
-            <div>자동 갱신 주기: {todaySummary.refreshCycleMin}분</div>
-          </div>
-          <div className="text-[12.5px] text-[#64748B]">
-            관리자 <b className="font-semibold text-[#0F172A]">김서울</b> · 영업지원처
-            <span className="mx-3 text-[#E2E8F0]">|</span>로그아웃
-          </div>
+        <div className="ml-auto text-right text-[12px] leading-tight text-[#94A3B8]">
+          <div>{todaySummary.updatedAt}</div>
+          <div>자동 갱신 주기: {todaySummary.refreshCycleMin}분</div>
         </div>
       </header>
 
