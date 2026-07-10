@@ -1,16 +1,19 @@
-import { CalendarClock, FileBarChart2, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { BellRing, BrainCog, CalendarClock, History, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { todaySummary } from "../../data/dashboard";
 
 const TABS = [
-  { key: "dashboard", label: "대시보드", icon: LayoutDashboard },
-  { key: "hitl", label: "예외검수", icon: ShieldCheck },
-  { key: "report", label: "월간리포트", icon: FileBarChart2 },
-  { key: "forecast", label: "사전예보", icon: CalendarClock },
+  { key: "dashboard", label: "운영 대시보드", icon: LayoutDashboard },
+  { key: "hitl", label: "예외 검수(HITL)", icon: ShieldCheck },
+  { key: "history", label: "배부 이력조회", icon: History },
+  { key: "alerts", label: "민원알림 센터", icon: BellRing },
+  { key: "forecast", label: "민원 사전예보", icon: CalendarClock },
+  { key: "learning", label: "AI 학습현황", icon: BrainCog },
 ];
 
 export function AppShell({ active, onChange, children }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      <header className="flex h-16 items-center gap-8 bg-white px-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]">
+      <header className="flex h-16 items-center gap-4 bg-white px-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]">
         <div className="flex items-center gap-2.5">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF1FC]">
             <img src={`${import.meta.env.BASE_URL}logo-mark.svg`} alt="" className="h-[18px] w-[18px]" />
@@ -20,21 +23,24 @@ export function AppShell({ active, onChange, children }) {
             <div className="text-[14px] font-bold text-[#0F172A]">AI 민원 자동배부</div>
           </div>
         </div>
-        <nav className="flex gap-6 text-[13px] font-medium text-[#64748B]">
-          <span>이용정보</span>
-          <span>안전환경</span>
-          <span>시민참여</span>
-          <span>알림마당</span>
-          <span>정보공개</span>
-        </nav>
-        <div className="ml-auto text-[12.5px] text-[#64748B]">
-          관리자 <b className="font-semibold text-[#0F172A]">김서울</b> · 영업지원처
-          <span className="mx-3 text-[#E2E8F0]">|</span>로그아웃
+        <span className="ml-2 text-[15px] font-bold text-[#0F172A]">민원 자동배부 대시보드</span>
+        <div className="ml-auto flex items-center gap-6">
+          <div className="text-right text-[12px] leading-tight text-[#94A3B8]">
+            <div>{todaySummary.updatedAt}</div>
+            <div>자동 갱신 주기: {todaySummary.refreshCycleMin}분</div>
+          </div>
+          <div className="text-[12.5px] text-[#64748B]">
+            관리자 <b className="font-semibold text-[#0F172A]">김서울</b> · 영업지원처
+            <span className="mx-3 text-[#E2E8F0]">|</span>로그아웃
+          </div>
         </div>
       </header>
 
       <div className="flex">
-        <aside className="flex w-[92px] shrink-0 flex-col items-center gap-1 bg-[#17288B] py-6">
+        <aside className="flex w-[204px] shrink-0 flex-col bg-[#17288B] py-5">
+          <div className="mb-2 px-5 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/45">
+            VOC 통합플랫폼
+          </div>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = active === tab.key;
@@ -43,11 +49,11 @@ export function AppShell({ active, onChange, children }) {
                 key={tab.key}
                 type="button"
                 onClick={() => onChange(tab.key)}
-                className={`flex w-[72px] flex-col items-center gap-1.5 rounded-[12px] py-3 text-[11px] font-medium transition-colors ${
-                  isActive ? "bg-white/12 font-semibold text-white" : "text-white/55 hover:bg-white/8 hover:text-white/85"
+                className={`mx-3 flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13.5px] font-medium transition-colors ${
+                  isActive ? "bg-white/14 font-semibold text-white" : "text-white/60 hover:bg-white/8 hover:text-white/90"
                 }`}
               >
-                <Icon className="h-[20px] w-[20px]" strokeWidth={1.75} />
+                <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
                 {tab.label}
               </button>
             );

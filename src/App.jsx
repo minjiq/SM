@@ -3,9 +3,11 @@ import { AppShell } from "./components/layout/AppShell";
 import { Dashboard } from "./components/dashboard/Dashboard";
 
 const COMING_SOON = {
-  hitl: "HITL 예외 검수 (XAI)",
-  report: "경영진 월간 리포트",
-  forecast: "민원 사전 예보",
+  hitl: "예외 검수 (HITL)",
+  history: "배부 이력조회",
+  alerts: "민원알림 센터",
+  forecast: "민원 사전예보",
+  learning: "AI 학습현황",
 };
 
 export default function App() {

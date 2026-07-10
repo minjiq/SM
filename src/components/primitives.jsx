@@ -57,6 +57,8 @@ export function IconChip({ tone = "primary", children }) {
       ? "bg-[#FEF2F2] text-[#DC2626]"
       : tone === "accent"
       ? "bg-[#EEF1FC] text-[#3B54D9]"
+      : tone === "amber"
+      ? "bg-[#FFFBEB] text-[#B45309]"
       : "bg-[#E9ECFA] text-[#17288B]";
   return <div className={`grid h-10 w-10 place-items-center rounded-[12px] ${toneClass}`}>{children}</div>;
 }
