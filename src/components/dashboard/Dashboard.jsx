@@ -128,30 +128,29 @@ function LegendRow() {
   );
 }
 
-function WeatherKpi() {
+function WeatherStrip() {
   return (
-    <Card padding="p-7">
-      <div className="flex items-start justify-between">
-        <span className="text-[13px] font-semibold tracking-[-0.01em] text-[#64748B]">오늘의 기상 연계</span>
-        <IconChip tone="amber">
-          <Sun className="h-[18px] w-[18px]" />
-        </IconChip>
+    <div className="mb-4 flex flex-wrap items-center gap-3.5 rounded-[12px] bg-white px-5 py-3.5 text-[12.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
+      <IconChip tone="amber">
+        <Sun className="h-[17px] w-[17px]" />
+      </IconChip>
+      <div className="min-w-0">
+        <span className="font-semibold text-[#0F172A]">{weatherToday.headline}</span>
+        <span className="ml-2 text-[#64748B]">{weatherToday.impact}</span>
       </div>
-      <div className="mt-4 text-[15px] font-bold leading-tight text-[#0F172A]">{weatherToday.headline}</div>
-      <div className="mt-1 text-[11.5px] leading-snug text-[#64748B]">{weatherToday.impact}</div>
-      <div className="mt-3.5 grid grid-cols-4 gap-1.5">
+      <div className="ml-auto flex items-center gap-4">
         {weatherToday.days.map((d) => {
           const Icon = WEATHER_ICON[d.icon];
           return (
-            <div key={d.label} className="flex flex-col items-center gap-1 rounded-[10px] bg-[#F8FAFC] py-2">
-              <span className="text-[10px] text-[#94A3B8]">{d.label}</span>
+            <span key={d.label} className="flex items-center gap-1.5">
+              <span className="text-[11px] text-[#94A3B8]">{d.label}</span>
               <Icon className="h-3.5 w-3.5 text-[#B45309]" />
-              <span className="tabular-nums text-[11.5px] font-semibold text-[#0F172A]">{d.temp}°</span>
-            </div>
+              <span className="tabular-nums font-semibold text-[#0F172A]">{d.temp}°</span>
+            </span>
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -622,6 +621,7 @@ export function Dashboard() {
 
       <SubNavRow />
       <LegendRow />
+      <WeatherStrip />
 
       <div className="mb-6 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
         <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
@@ -637,7 +637,7 @@ export function Dashboard() {
         </button>
       </div>
 
-      <div className="mb-6 grid grid-cols-5 gap-5">
+      <div className="mb-6 grid grid-cols-4 gap-5">
         <KpiCard
           label="오늘 접수"
           icon={<Inbox className="h-[18px] w-[18px]" />}
@@ -669,7 +669,6 @@ export function Dashboard() {
           note={`최대 대기 ${todaySummary.hitlMaxWaitMin}분 — 즉시 검수 필요`}
           valueColor="#DC2626"
         />
-        <WeatherKpi />
       </div>
 
       <ProcessingBar />
