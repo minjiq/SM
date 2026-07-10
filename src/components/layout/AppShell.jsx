@@ -60,7 +60,14 @@ export function AppShell({ active, onChange, children }) {
           })}
         </aside>
 
-        <main className="min-w-0 flex-1 px-8 py-8 pb-20">
+        <main
+          className="min-w-0 flex-1 px-8 py-8 pb-20"
+          style={{
+            backgroundImage:
+              "radial-gradient(1100px 460px at 50% -80px, rgba(23,40,139,0.10), transparent 70%)",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <div className="mx-auto w-full max-w-[1360px]">{children}</div>
         </main>
       </div>
