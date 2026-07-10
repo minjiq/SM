@@ -11,7 +11,6 @@ export function AppShell({ active, onChange, children }) {
   return (
     <div className="flex min-h-screen bg-[#F8FAFC]">
       <aside className="flex w-[92px] shrink-0 flex-col items-center gap-1 bg-[#17288B] py-6">
-        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="서울교통공사" className="mb-6 h-5 w-auto brightness-0 invert" />
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = active === tab.key;
@@ -33,7 +32,15 @@ export function AppShell({ active, onChange, children }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex h-16 items-center gap-8 bg-white px-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]">
-          <span className="text-[13.5px] font-semibold text-[#0F172A]">AI 민원 자동배부 시스템</span>
+          <div className="flex items-center gap-2.5">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF1FC]">
+              <img src={`${import.meta.env.BASE_URL}logo-mark.svg`} alt="" className="h-[18px] w-[18px]" />
+            </div>
+            <div className="leading-tight">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">서울교통공사</div>
+              <div className="text-[14px] font-bold text-[#0F172A]">AI 민원 자동배부</div>
+            </div>
+          </div>
           <nav className="flex gap-6 text-[13px] font-medium text-[#64748B]">
             <span>이용정보</span>
             <span>안전환경</span>
