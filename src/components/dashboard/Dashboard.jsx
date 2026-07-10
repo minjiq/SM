@@ -112,7 +112,7 @@ function LegendRow() {
   const items = [
     { color: "#DC2626", label: "긴급/위험 — 즉시 조치" },
     { color: "#F59E0B", label: "주의 — 모니터링 강화" },
-    { color: "#3B54D9", label: "정보 — 참고" },
+    { color: "#17288B", label: "정보 — 참고" },
     { color: "#10B981", label: "양호 — 정상 운영" },
   ];
   return (
@@ -335,8 +335,8 @@ function ConfidenceBucketsCard() {
 function UrgentAlertsCard() {
   const pinned = urgentAlerts.filter((a) => a.pinned);
   const rest = urgentAlerts.filter((a) => !a.pinned);
-  const toneBox = { red: "border-[#DC2626] bg-[#FEF2F2]", amber: "border-[#F59E0B]/40 bg-white", blue: "border-[#3B54D9]/30 bg-white" };
-  const toneDot = { red: "#DC2626", amber: "#F59E0B", blue: "#3B54D9" };
+  const toneBox = { red: "border-[#DC2626] bg-[#FEF2F2]", amber: "border-[#F59E0B]/40 bg-white", blue: "border-[#17288B]/30 bg-white" };
+  const toneDot = { red: "#DC2626", amber: "#F59E0B", blue: "#17288B" };
   const toneBadge = { amber: "amber", blue: "blue" };
 
   return (
@@ -649,14 +649,14 @@ export function Dashboard() {
         <KpiCard
           label="AI 자동배부율"
           icon={<Bot className="h-[18px] w-[18px]" />}
-          iconTone="accent"
+          iconTone="primary"
           value={`${todaySummary.autoRate}%`}
           note="● 목표 95% 달성"
         />
         <KpiCard
           label="평균 배부시간"
           icon={<Timer className="h-[18px] w-[18px]" />}
-          iconTone="accent"
+          iconTone="primary"
           value={`${todaySummary.avgDispatchSec}초`}
           note={`● 전주 대비 ${todaySummary.avgDispatchDeltaSec}초`}
         />

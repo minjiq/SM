@@ -2,7 +2,7 @@ export const color = {
   primary: "#17288B",
   primaryHover: "#1F3AA6",
   primarySoft: "#E9ECFA",
-  accent: "#3B54D9",
+  primaryMuted: "#1E2A47",
   ink: "#0F172A",
   textSecondary: "#64748B",
   textTertiary: "#94A3B8",
@@ -10,6 +10,10 @@ export const color = {
   surface: "#FFFFFF",
   border: "#E2E8F0",
 };
+
+// Monochrome navy scale for charts that need several segments (e.g. share
+// donuts) without reaching for unrelated hues.
+export const navyScale = ["#17288B", "#2C3FA0", "#4A5FBC", "#7189D6", "#9DB0E6", "#C6D0F1", "#E2E8F0"];
 
 export const badgeTone = {
   red: "bg-[#FEF2F2] text-[#DC2626]",
@@ -21,7 +25,6 @@ export const badgeTone = {
 
 export const chartPalette = {
   primary: "#17288B",
-  accent: "#3B54D9",
   track: "#E2E8F0",
   danger: "#EF4444",
   ink: "#0F172A",

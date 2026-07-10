@@ -124,11 +124,11 @@ export const orgTable = [
 
 export const orgShare = [
   { label: "고객센터", pct: 33, color: "#17288B" },
-  { label: "시설", pct: 25, color: "#5F79D6" },
-  { label: "전동차", pct: 21, color: "#F59E0B" },
-  { label: "승강기", pct: 9, color: "#FBC94C" },
-  { label: "냉난방", pct: 7, color: "#94A3B8" },
-  { label: "안전", pct: 4, color: "#10B981" },
+  { label: "시설", pct: 25, color: "#2C3FA0" },
+  { label: "전동차", pct: 21, color: "#4A5FBC" },
+  { label: "승강기", pct: 9, color: "#7189D6" },
+  { label: "냉난방", pct: 7, color: "#9DB0E6" },
+  { label: "안전", pct: 4, color: "#C6D0F1" },
   { label: "기타", pct: 1, color: "#E2E8F0" },
 ];
 

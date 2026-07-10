@@ -37,7 +37,7 @@ export function AppShell({ active, onChange, children }) {
       </header>
 
       <div className="flex">
-        <aside className="flex w-[204px] shrink-0 flex-col bg-[#17288B] py-5">
+        <aside className="flex w-[204px] shrink-0 flex-col bg-[#1E2A47] py-5">
           <div className="mb-2 px-5 text-[11px] font-semibold uppercase tracking-[0.1em] text-white/45">
             VOC 통합플랫폼
           </div>
