@@ -15,13 +15,13 @@ export function AppShell({ active, onChange, children }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <header className="flex h-16 items-center gap-4 bg-white px-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]">
-        <div className="flex items-center gap-2.5">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF1FC]">
-            <img src={`${import.meta.env.BASE_URL}logo-mark.svg`} alt="" className="h-[18px] w-[18px]" />
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#EEF1FC]">
+            <img src={`${import.meta.env.BASE_URL}logo-mark.svg`} alt="" className="h-5 w-5" />
           </div>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">서울교통공사</span>
+          <span className="text-[15px] font-bold text-[#0F172A]">서울교통공사</span>
         </div>
-        <span className="ml-2 text-[15px] font-bold text-[#0F172A]">민원 자동배부 대시보드</span>
+        <span className="ml-2 border-l border-[#E2E8F0] pl-4 text-[15px] font-bold text-[#0F172A]">민원 자동배부 대시보드</span>
         <div className="ml-auto text-right text-[12px] leading-tight text-[#94A3B8]">
           <div>{todaySummary.updatedAt}</div>
           <div>자동 갱신 주기: {todaySummary.refreshCycleMin}분</div>
