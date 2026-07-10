@@ -19,10 +19,7 @@ export function AppShell({ active, onChange, children }) {
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#EEF1FC]">
             <img src={`${import.meta.env.BASE_URL}logo-mark.svg`} alt="" className="h-[18px] w-[18px]" />
           </div>
-          <div className="leading-tight">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">서울교통공사</div>
-            <div className="text-[14px] font-bold text-[#0F172A]">AI 민원 자동배부</div>
-          </div>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">서울교통공사</span>
         </div>
         <span className="ml-2 text-[15px] font-bold text-[#0F172A]">민원 자동배부 대시보드</span>
         <div className="ml-auto text-right text-[12px] leading-tight text-[#94A3B8]">
