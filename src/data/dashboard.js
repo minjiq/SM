@@ -17,11 +17,36 @@ function buildLine(lineIndex, name) {
 
 export const inflowByLine = Object.fromEntries(lineNames.map((name, i) => [name, buildLine(i, name)]));
 
-export const confidenceHistogram = [2, 3, 4, 6, 8, 10, 14, 19, 26, 34].map((count, i) => ({
-  bin: 50 + i * 4.5,
-  count,
-}));
-export const confidenceTotal = 186;
+export const confidenceTiers = [
+  {
+    key: "ok",
+    emoji: "😀",
+    label: "확실 (90% 이상)",
+    count: 3060,
+    pct: 92,
+    desc: "바로 자동배부 — 사람 개입 불필요",
+    tone: "green",
+  },
+  {
+    key: "mid",
+    emoji: "😐",
+    label: "다소 애매 (85~90%)",
+    count: 214,
+    pct: 6,
+    desc: "자동배부 후 사후 모니터링",
+    tone: "amber",
+  },
+  {
+    key: "low",
+    emoji: "❗",
+    label: "불확실 (85% 미만)",
+    count: 66,
+    pct: 2,
+    desc: "사람 검수(HITL)로 자동 전달",
+    tone: "red",
+  },
+];
+export const confidenceTotal = 3340;
 
 export const exceptionQueue = [
   {
@@ -112,6 +137,33 @@ export const aiProcessing = {
   avgWaitSec: 8.2,
 };
 
+export const todoItems = [
+  {
+    tone: "red",
+    label: "예외 검수 대기",
+    count: 48,
+    unit: "건",
+    sub: "최대 대기 32분",
+    action: "검수 시작 →",
+  },
+  {
+    tone: "amber",
+    label: "배부 실패 재처리",
+    count: 18,
+    unit: "건",
+    sub: "사유별 조치 필요",
+    action: "재처리 →",
+  },
+  {
+    tone: "green",
+    label: "분류 지연 (5분 초과)",
+    count: 0,
+    unit: "건",
+    sub: "AI가 자동 소화 중",
+    action: "정상",
+  },
+];
+
 export const orgTable = [
   { org: "계", total: 3340, auto: 2989, exception: 48, failed: 18, unprocessed: 285, rate: 95.0, status: "양호" },
   { org: "고객센터", total: 1120, auto: 1022, exception: 19, failed: 9, unprocessed: 70, rate: 97.5, status: "양호" },
@@ -121,6 +173,7 @@ export const orgTable = [
   { org: "냉난방", total: 245, auto: 168, exception: 28, failed: 8, unprocessed: 41, rate: 85.3, status: "점검" },
   { org: "안전", total: 132, auto: 93, exception: 14, failed: 4, unprocessed: 21, rate: 86.4, status: "주의" },
 ];
+export const orgNote = "냉난방: 폭염 신규 유형 유입으로 AI 확신도 하락 → AI 학습현황에서 재학습 필요";
 
 export const orgShare = [
   { label: "고객센터", pct: 33, color: "#17288B" },
@@ -144,8 +197,8 @@ export const complaintTypes = [
   { label: "열차 지연", count: 334, delta: "—", tone: "flat" },
   { label: "역사 환경", count: 268, delta: "—", tone: "flat" },
   { label: "유실물", count: 227, delta: "▼3%", tone: "down" },
-  { label: "역사내 시설물", count: 179, delta: "—", tone: "flat" },
 ];
+export const complaintComposition = "대분류 구성: 단순문의 58% · 불편접수 36% · 칭찬격려 3% · 기타 3%";
 
 export const receiptTimeline = [
   { time: "09:00", count: 210, peak: false },
@@ -154,13 +207,6 @@ export const receiptTimeline = [
   { time: "09:45", count: 298, peak: true },
   { time: "10:00", count: 260, peak: false },
   { time: "10:15", count: 232, peak: false },
-];
-
-export const confidenceBuckets = [
-  { label: "95~100%", count: 2318, tone: "green" },
-  { label: "90~95%", count: 742, tone: "green" },
-  { label: "85~90%", count: 214, tone: "amber" },
-  { label: "85% 미만", count: 66, tone: "red", note: "→ 검수" },
 ];
 
 export const urgentAlerts = [
@@ -203,5 +249,12 @@ export const urgentAlerts = [
     text: "타기관 이첩 대상 민원 3건 발생",
     meta: "실시간 이첩 시스템",
     action: "처리기한 최대 7일 단축",
+  },
+  {
+    pinned: false,
+    tone: "blue",
+    text: "또타24 챗봇 자동응대 처리 1,204건",
+    meta: "챗봇 연계",
+    action: "전일 대비 +8%",
   },
 ];

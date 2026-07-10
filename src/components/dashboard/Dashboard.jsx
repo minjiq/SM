@@ -1,49 +1,51 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle,
+  ArrowRight,
   ArrowUpDown,
   Bot,
+  CalendarDays,
   Cloud,
   CloudRain,
   Inbox,
-  SearchCheck,
   Sun,
   Timer,
 } from "lucide-react";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge, Card, Chip, IconChip, KpiCard } from "../primitives";
 import { DesignIntent } from "./RationaleNote";
 import {
   aiProcessing,
   channelBreakdown,
+  complaintComposition,
   complaintTypes,
-  confidenceBuckets,
-  confidenceHistogram,
-  confidenceTotal,
+  confidenceTiers,
   exceptionQueue,
   inflowByLine,
   lineNames,
   liveLogPool,
+  orgNote,
   orgShare,
   orgTable,
   todaySummary,
+  todoItems,
   urgentAlerts,
   weatherToday,
 } from "../../data/dashboard";
 
 const WEATHER_ICON = { sun: Sun, rain: CloudRain, cloud: Cloud };
 const STATUS_TONE = { 양호: "green", 주의: "amber", 점검: "red" };
+const TODO_BOX_TONE = {
+  red: "border-[#F3C6C6] bg-[#FDF6F6]",
+  amber: "border-[#F0D9B8] bg-[#FDFAF4]",
+  green: "border-[#BFDCC1] bg-[#F6FAF6]",
+};
+const TODO_COUNT_TONE = { red: "text-[#DC2626]", amber: "text-[#B45309]", green: "text-[#059669]" };
+const TODO_BTN_TONE = {
+  red: "bg-[#DC2626] text-white",
+  amber: "bg-[#B45309] text-white",
+  green: "border border-[#059669] text-[#059669]",
+};
 
 function InflowTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -73,7 +75,9 @@ function SortableHeader({ children, align = "left" }) {
 
 function SubNavRow() {
   const [channel, setChannel] = useState("통합민원현황");
+  const [period, setPeriod] = useState("오늘");
   const channels = ["통합민원현황", "고객센터", "고객의소리", "서울시응답소"];
+  const periods = ["오늘", "주간", "월간", "연간"];
 
   return (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -93,17 +97,55 @@ function SubNavRow() {
           </button>
         ))}
       </div>
-      <div className="flex gap-2 text-[13px] font-medium text-[#64748B]">
-        {["2026", "7월", "전체"].map((v) => (
-          <select
-            key={v}
-            defaultValue={v}
-            className="rounded-[10px] border border-[#E2E8F0] bg-white px-3 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17288B]/30"
-          >
-            <option>{v}</option>
-          </select>
-        ))}
+      <div className="flex items-center gap-2.5">
+        <div className="flex rounded-full border border-[#E2E8F0] bg-white p-0.5">
+          {periods.map((p) => (
+            <button
+              key={p}
+              type="button"
+              onClick={() => setPeriod(p)}
+              className={`rounded-full px-4 py-1.5 text-[12.5px] font-semibold transition-colors ${
+                period === p ? "bg-[#17288B] text-white" : "text-[#64748B] hover:text-[#0F172A]"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3.5 py-1.5 text-[12.5px] text-[#64748B]">
+          <CalendarDays className="h-3.5 w-3.5" />
+          2026.07.10
+        </div>
       </div>
+    </div>
+  );
+}
+
+function TodoStrip() {
+  return (
+    <div className="mb-4 flex flex-wrap items-stretch gap-2.5">
+      <div className="flex shrink-0 items-center whitespace-nowrap rounded-[10px] bg-[#17288B] px-4 text-[13px] font-bold text-white">
+        지금 처리할 업무
+      </div>
+      {todoItems.map((item) => (
+        <div
+          key={item.label}
+          className={`flex min-w-0 flex-1 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-[12.5px] ${TODO_BOX_TONE[item.tone]}`}
+        >
+          <span className="shrink-0 font-bold text-[#0F172A]">{item.label}</span>
+          <span className={`shrink-0 text-[19px] font-extrabold tabular-nums ${TODO_COUNT_TONE[item.tone]}`}>
+            {item.count}
+            <span className="text-[12px] font-semibold">{item.unit}</span>
+          </span>
+          <span className="min-w-0 truncate text-[11px] text-[#94A3B8]">{item.sub}</span>
+          <button
+            type="button"
+            className={`ml-auto shrink-0 rounded-[6px] px-3 py-1.5 text-[11.5px] font-bold transition-transform active:scale-[0.96] ${TODO_BTN_TONE[item.tone]}`}
+          >
+            {item.action}
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
@@ -154,91 +196,113 @@ function WeatherStrip() {
   );
 }
 
-function ProcessingBar() {
+function FlowBox({ label, value, sub, tone }) {
+  const toneClass =
+    tone === "green"
+      ? "border-[#9DC9A0] bg-[#F4FAF4]"
+      : tone === "muted"
+      ? "border-[#C9D0DA] bg-[#F7F8FA]"
+      : "border-[#CBD5E1] bg-white";
+  const valueClass = tone === "green" ? "text-[#2E7D32]" : "text-[#0F172A]";
+  return (
+    <div className={`min-w-[150px] rounded-[10px] border-[1.5px] px-4 py-3 text-center ${toneClass}`}>
+      <div className="mb-1 text-[11px] font-bold text-[#64748B]">{label}</div>
+      <div className={`whitespace-nowrap text-[19px] font-extrabold ${valueClass}`}>{value}</div>
+      {sub ? <div className="mt-1 text-[10.5px] leading-[1.5] text-[#94A3B8]">{sub}</div> : null}
+    </div>
+  );
+}
+
+function ProcessingFlow() {
   const { total, autoComplete, exception, failed, unprocessed, avgWaitSec } = aiProcessing;
-  const pct = (n) => (n / total) * 100;
-  const segments = [
-    { key: "auto", value: autoComplete, color: "#10B981", label: `자동배부 완료 ${autoComplete.toLocaleString()}건 (${pct(autoComplete).toFixed(1)}%)` },
-    { key: "exception", value: exception, color: "#F59E0B" },
-    { key: "failed", value: failed, color: "#DC2626" },
-    { key: "unprocessed", value: unprocessed, color: "#CBD5E1", label: `미처리 ${unprocessed}건` },
-  ];
-  const legend = [
-    { color: "#10B981", text: `자동배부 완료 ${autoComplete.toLocaleString()}건 (양호)` },
-    { color: "#F59E0B", text: `예외 검수 ${exception}건 (주의) → HITL 화면으로 이동` },
-    { color: "#DC2626", text: `배부 실패 ${failed}건 (재처리 필요)` },
-    { color: "#CBD5E1", text: `미처리(분류 대기) ${unprocessed}건 — 평균 대기 ${avgWaitSec}초` },
-  ];
 
   return (
-    <Card
-      title="AI 처리 현황"
-      meta={`접수 ${total.toLocaleString()}건 = 자동배부 + 예외검수 + 실패 + 미처리 · 5분 단위 갱신`}
-      className="mb-6"
-    >
-      <div className="flex h-9 w-full overflow-hidden rounded-[8px] bg-[#F1F5F9]">
-        {segments.map((seg) => (
-          <div
-            key={seg.key}
-            title={seg.label || `${seg.value}건`}
-            className="flex items-center justify-center overflow-hidden whitespace-nowrap text-[12px] font-bold text-white"
-            style={{ width: `${pct(seg.value)}%`, background: seg.color }}
-          >
-            {pct(seg.value) > 8 ? seg.label : null}
+    <Card title="AI 처리 흐름" meta="각 상태별로 '무엇을 하면 되는지'가 함께 보이도록 구성" className="mb-6">
+      <div className="flex flex-wrap items-center gap-2">
+        <FlowBox label="① 접수" value={`${total.toLocaleString()}건`} sub="3개 채널 통합 유입" />
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
+        <FlowBox
+          label="② AI 분류 중 (미처리)"
+          value={`${unprocessed}건`}
+          sub={<>평균 {avgWaitSec}초 내 자동 소화<br /><span className="text-[#059669]">5분 초과 지연 0건 — 조치 불필요</span></>}
+          tone="muted"
+        />
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
+        <div className="min-w-[180px] flex-1">
+          <FlowBox label="③ 자동배부 완료" value={`${autoComplete.toLocaleString()}건 (89.5%)`} sub="담당부서 자동 전달 완료 — 조치 불필요" tone="green" />
+        </div>
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
+        <div className="flex min-w-[220px] flex-1 flex-col gap-2">
+          <div className="flex items-center gap-2.5 rounded-[10px] border border-[#EEC089] bg-[#FDFAF4] px-3.5 py-2 text-[12px]">
+            예외 검수 <b className="tabular-nums text-[#B45309]">{exception}건</b>
+            <span className="text-[10.5px] text-[#94A3B8]">AI 확신 부족</span>
+            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#B45309] px-2.5 py-1 text-[10.5px] font-bold text-white">
+              HITL 검수 →
+            </button>
           </div>
-        ))}
+          <div className="flex items-center gap-2.5 rounded-[10px] border border-[#E5A3A3] bg-[#FDF6F6] px-3.5 py-2 text-[12px]">
+            배부 실패 <b className="tabular-nums text-[#DC2626]">{failed}건</b>
+            <span className="text-[10.5px] text-[#94A3B8]">자동 재시도 실패분</span>
+            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#DC2626] px-2.5 py-1 text-[10.5px] font-bold text-white">
+              재처리 →
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[#64748B]">
-        {legend.map((l) => (
-          <span key={l.text} className="flex items-center gap-1.5">
-            <i className="inline-block h-2.5 w-2.5 rounded-[3px]" style={{ background: l.color }} />
-            {l.text}
-          </span>
-        ))}
+      <div className="mt-5 grid grid-cols-3 gap-5 border-t border-dashed border-[#E2E8F0] pt-4 text-[11px] leading-[1.6] text-[#64748B]">
+        <div>
+          <b className="mb-0.5 block text-[#059669]">■ 완료·미처리 → 기다리면 됨</b>
+          미처리는 AI가 초 단위로 처리하는 대기열. 5분 초과 시에만 '지연'으로 상단에 경고.
+        </div>
+        <div>
+          <b className="mb-0.5 block text-[#B45309]">■ 예외 검수 → 사람이 판단</b>
+          AI가 확신 못한 건. HITL 화면에서 승인/수정하면 AI가 재학습.
+        </div>
+        <div>
+          <b className="mb-0.5 block text-[#DC2626]">■ 배부 실패 → 사유 확인 후 조치</b>
+          담당부서 미매핑 9 · 신규유형 6 · 형식오류 3. [재처리] 클릭 시 자동 재시도.
+        </div>
       </div>
     </Card>
   );
 }
 
-function OrgTable() {
+function OrgBars() {
+  const rows = orgTable.filter((row) => row.org !== "계");
   return (
-    <Card title="기관별 AI 배부처리 건수 현황" meta="자동배부율 90% 미만 기관은 주의 표시">
-      <table className="w-full border-separate border-spacing-0 text-[12.5px]">
-        <thead>
-          <tr className="text-left">
-            <th className="whitespace-nowrap pb-3 pr-3 text-[11.5px] font-semibold text-[#94A3B8]">기관</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">계</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">AI 자동배부</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">예외검수</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">배부실패</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">미처리</th>
-            <th className="whitespace-nowrap pb-3 pr-3 text-right text-[11.5px] font-semibold text-[#94A3B8]">자동배부율</th>
-            <th className="whitespace-nowrap pb-3 text-[11.5px] font-semibold text-[#94A3B8]">상태</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orgTable.map((row) => (
-            <tr key={row.org} className={row.org === "계" ? "bg-[#F8FAFC] font-semibold" : "hover:bg-[#F8FAFC]"}>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-[#0F172A]">{row.org}</td>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums text-[#0F172A]">{row.total.toLocaleString()}</td>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums text-[#0F172A]">{row.auto.toLocaleString()}</td>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums text-[#0F172A]">{row.exception}</td>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums text-[#0F172A]">{row.failed}</td>
-              <td className="border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums text-[#0F172A]">{row.unprocessed}</td>
-              <td
-                className={`border-t border-[#F1F5F9] py-3 pr-3 text-right tabular-nums font-semibold ${
-                  row.rate < 90 ? "text-[#DC2626]" : "text-[#0F172A]"
-                }`}
-              >
+    <Card title="기관별 AI 배부처리 현황" meta="막대 = 처리결과 구성비 · 자동배부율 90% 미만 기관은 주의 표시">
+      <div className="space-y-3">
+        {rows.map((row) => {
+          const pct = (n) => (n / row.total) * 100;
+          return (
+            <div key={row.org} className="flex items-center gap-3 text-[11.5px]">
+              <span className="w-[52px] shrink-0 text-right font-bold text-[#0F172A]">{row.org}</span>
+              <span className="w-[52px] shrink-0 text-[10.5px] text-[#94A3B8]">{row.total.toLocaleString()}건</span>
+              <div className="flex h-5 flex-1 overflow-hidden rounded-[3px] border border-[#E2E8F0]">
+                <div className="h-full bg-[#C8E0C9]" style={{ width: `${pct(row.auto)}%` }} title={`자동배부 ${row.auto}건`} />
+                <div className="h-full bg-[#F0B070]" style={{ width: `${pct(row.exception)}%` }} title={`예외검수 ${row.exception}건`} />
+                <div className="h-full bg-[#E08A8A]" style={{ width: `${pct(row.failed)}%` }} title={`실패 ${row.failed}건`} />
+                <div className="h-full bg-[#DCDCDC]" style={{ width: `${pct(row.unprocessed)}%` }} title={`분류중 ${row.unprocessed}건`} />
+              </div>
+              <span className={`w-[52px] shrink-0 text-right text-[12.5px] font-extrabold ${row.rate < 90 ? "text-[#DC2626]" : "text-[#0F172A]"}`}>
                 {row.rate.toFixed(1)}%
-              </td>
-              <td className="border-t border-[#F1F5F9] py-3">
+              </span>
+              <span className="w-[44px] shrink-0 text-center">
                 <Badge tone={STATUS_TONE[row.status]}>{row.status}</Badge>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-[10.5px] text-[#64748B]">
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#C8E0C9]" />자동배부</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#F0B070]" />예외검수</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#E08A8A]" />실패</span>
+        <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#DCDCDC]" />분류중</span>
+      </div>
+      <div className="mt-3 border-t border-dashed border-[#E2E8F0] pt-3 text-[11px] leading-[1.6] text-[#94A3B8]">
+        ※ <span className="font-semibold text-[#DC2626]">냉난방</span>: {orgNote.replace(/^냉난방:\s*/, "")}
+      </div>
     </Card>
   );
 }
@@ -268,7 +332,7 @@ function OrgShareDonut() {
   );
 }
 
-function ProportionBars({ title, meta, items, maxOf }) {
+function ProportionBars({ title, meta, items, maxOf, footer }) {
   const max = maxOf ?? Math.max(...items.map((i) => i.count));
   return (
     <Card title={title} meta={meta}>
@@ -299,33 +363,48 @@ function ProportionBars({ title, meta, items, maxOf }) {
           </div>
         ))}
       </div>
+      {footer ? (
+        <div className="mt-3.5 border-t border-dashed border-[#E2E8F0] pt-3 text-[11px] text-[#94A3B8]">{footer}</div>
+      ) : null}
     </Card>
   );
 }
 
-function ConfidenceBucketsCard() {
-  const max = Math.max(...confidenceBuckets.map((b) => b.count));
-  const barColor = { green: "#10B981", amber: "#F59E0B", red: "#DC2626" };
+const TIER_CARD_TONE = {
+  green: "border-[#9DC9A0] bg-[#F6FAF6] text-[#2E7D32]",
+  amber: "border-[#EEC089] bg-[#FDFAF4] text-[#B45309]",
+  red: "border-[#E5A3A3] bg-[#FDF6F6] text-[#DC2626]",
+};
+const TIER_BAR_COLOR = { green: "#C8E0C9", amber: "#F0B070", red: "#E08A8A" };
+const TIER_BAR_TEXT = { green: "#1E4D20", amber: "#5C3A00", red: "#FFFFFF" };
+
+function ConfidenceTiersCard() {
   return (
-    <Card title="신뢰도 구간별 건수 현황" meta="낮은 구간은 클릭하면 검수로 이동">
-      <div className="space-y-3.5">
-        {confidenceBuckets.map((b) => (
-          <div key={b.label}>
-            <div className="mb-1.5 flex items-center justify-between text-[12.5px]">
-              <span className="font-medium text-[#0F172A]">{b.label}</span>
-              <span className="tabular-nums text-[#64748B]">
-                {b.count.toLocaleString()}건{" "}
-                {b.note ? <span className="font-semibold text-[#DC2626]">{b.note}</span> : null}
-              </span>
-            </div>
-            <div className="h-2 rounded-full bg-[#F1F5F9]">
-              <div
-                className="h-2 rounded-full"
-                style={{ width: `${(b.count / max) * 100}%`, background: barColor[b.tone] }}
-              />
-            </div>
+    <Card title="AI는 얼마나 확신하고 배부했나?" meta="확신도 = AI가 담당부서를 확신한 정도">
+      <div className="flex h-[26px] overflow-hidden rounded-[6px] border border-[#94A3B8]/40">
+        {confidenceTiers.map((t) => (
+          <div
+            key={t.key}
+            className="flex items-center justify-center overflow-hidden whitespace-nowrap text-[10.5px] font-bold"
+            style={{ width: `${t.pct}%`, background: TIER_BAR_COLOR[t.tone], color: TIER_BAR_TEXT[t.tone] }}
+          >
+            {t.pct >= 10 ? `${t.label.split(" ")[0]} ${t.count.toLocaleString()}건 (${t.pct}%)` : `${t.pct}%`}
           </div>
         ))}
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2.5">
+        {confidenceTiers.map((t) => (
+          <div key={t.key} className={`rounded-[8px] border-[1.5px] px-3 py-2.5 text-[11px] leading-[1.5] ${TIER_CARD_TONE[t.tone]}`}>
+            <div className="mb-0.5 text-[11.5px] font-extrabold">
+              {t.emoji} {t.label}
+            </div>
+            <div className="mb-1 text-[16px] font-extrabold tabular-nums">{t.count.toLocaleString()}건</div>
+            <span className="text-[#64748B]">{t.desc}</span>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3.5 rounded-[10px] bg-[#F8FAFC] px-4 py-3 text-[12px] leading-[1.7] text-[#0F172A]">
+        ※ 요약: AI가 <b>100건 중 92건은 확신</b>하고 배부했고, 확신 못한 <b>2건만 사람이 검수</b>하면 됩니다.
       </div>
     </Card>
   );
@@ -374,9 +453,8 @@ function UrgentAlertsCard() {
 function FooterNote() {
   return (
     <div className="mt-6 rounded-[12px] bg-white px-6 py-4 text-[11.5px] leading-[1.8] text-[#94A3B8] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
-      연계 시스템: AI 챗봇 「또타24」(24시간 응대) · 타기관 민원 실시간 이첩 시스템 · 기상청 예보 API(특보·기온·강수) · 행사일정 DB
-      <br />
-      분석 데이터는 경영진 리포트·뉴스레터 형태로 시각화되어 정기 제공됩니다 (→ 경영진 월간 인사이트 화면 연계)
+      ※ 연계 시스템: AI 챗봇 「또타24」 · 타기관 민원 실시간 이첩 시스템 · 기상청 예보 API · 행사일정 DB &nbsp;|&nbsp; 분석
+      데이터는 경영 인사이트 리포트로 정기 제공
     </div>
   );
 }
@@ -410,69 +488,6 @@ function InflowChart({ line, onLineChange }) {
       <div className="mt-4 flex gap-5 text-[11.5px] font-medium text-[#64748B]">
         <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#E2E8F0]" />총 유입</span>
         <span className="flex items-center gap-1.5"><i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-[#17288B]" />자동배부 완료</span>
-      </div>
-    </Card>
-  );
-}
-
-function ConfidenceCard({ threshold, onThreshold }) {
-  const stats = useMemo(() => {
-    let auto = 0;
-    let total = 0;
-    confidenceHistogram.forEach(({ bin, count }) => {
-      total += count;
-      if (bin >= threshold) auto += count;
-    });
-    const autoN = Math.round((auto / total) * confidenceTotal);
-    return { autoN, queueN: confidenceTotal - autoN, pct: Math.round((autoN / confidenceTotal) * 100) };
-  }, [threshold]);
-
-  const nearestBin = confidenceHistogram.reduce((best, cur) =>
-    Math.abs(cur.bin - threshold) < Math.abs(best.bin - threshold) ? cur : best
-  );
-
-  return (
-    <Card
-      title={
-        <>
-          신뢰도 분포 · 자동배부 임계값 <Badge tone="gray">정책 시뮬레이션</Badge>
-        </>
-      }
-    >
-      <ResponsiveContainer width="100%" height={150}>
-        <BarChart data={confidenceHistogram} margin={{ top: 16, right: 4, left: -30, bottom: 0 }} barCategoryGap={5}>
-          <XAxis dataKey="bin" hide />
-          <YAxis hide />
-          <ReferenceLine
-            x={nearestBin.bin}
-            stroke="#EF4444"
-            strokeWidth={2}
-            label={{ value: `임계값 ${threshold}%`, position: "top", fontSize: 10.5, fill: "#EF4444", fontWeight: 700 }}
-          />
-          <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-            {confidenceHistogram.map((entry) => (
-              <Cell key={entry.bin} fill={entry.bin >= threshold ? "#17288B" : "#E2E8F0"} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-      <div className="mt-6 flex items-center gap-3 text-[12px] text-[#64748B]">
-        임계값
-        <input
-          type="range"
-          min={50}
-          max={95}
-          value={threshold}
-          onChange={(e) => onThreshold(Number(e.target.value))}
-          className="flex-1 accent-[#17288B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17288B]/30"
-        />
-        <b className="tabular-nums text-[#0F172A]">{threshold}%</b>
-      </div>
-      <div className="mt-3.5 rounded-[12px] bg-[#F8FAFC] px-4 py-3.5 text-[12.5px] leading-[1.75] text-[#0F172A]">
-        임계값 <b className="tabular-nums">{threshold}%</b> 적용 시 → 자동 배부{" "}
-        <b className="tabular-nums">{stats.autoN}건 ({stats.pct}%)</b> · 예외 큐 <b className="tabular-nums">{stats.queueN}건</b>
-        <br />
-        <span className="text-[#94A3B8]">임계값은 성능이 아니라 공사가 선택하는 정책값 — 변경 이력은 감사 로그에 기록됩니다.</span>
       </div>
     </Card>
   );
@@ -596,9 +611,10 @@ function LiveLogCard({ threshold }) {
   );
 }
 
+const AUTO_DISPATCH_THRESHOLD = 85;
+
 export function Dashboard() {
   const [line, setLine] = useState("전체");
-  const [threshold, setThreshold] = useState(80);
 
   return (
     <div>
@@ -611,15 +627,15 @@ export function Dashboard() {
           question={'"지금 개입해야 하는가"를 3초 안에 판단할 수 있는가'}
           ids="관련 기능: DASH-001~006 · 010 · 012 | 지표: 자동배부율, 예외 큐 잔량, 배부 리드타임"
         >
-          운영 관리자의 질문은 지표 나열이 아니라 <b className="text-white">개입 여부</b>다. 임계치 초과 시 경고 배너가
-          최상단을 점유하고, 예외 큐는 접수순이 아닌 <b className="text-white">영향도 정렬</b>(안전 → 교통약자 → 법정기한)로
-          배치했다. 실시간 배부 로그는 "AI가 지금 일하고 있다"는 <b className="text-white">시스템 가동감</b>을 제공하고,
-          신뢰도 임계값 슬라이더는 자동배부율이 고정 성능이 아니라 <b className="text-white">공사가 선택하는 정책값</b>임을
-          조작으로 체감하게 한다.
+          운영 관리자의 질문은 지표 나열이 아니라 <b className="text-white">개입 여부</b>다. "지금 처리할 업무" 스트립이
+          예외검수·재처리·지연을 한눈에 보여주고, 예외 큐는 접수순이 아닌 <b className="text-white">영향도 정렬</b>(안전 →
+          교통약자 → 법정기한)로 배치했다. AI 처리 흐름은 단순 숫자가 아니라{" "}
+          <b className="text-white">사람이 뭘 하면 되는지</b>를 함께 보여주도록 구성했다.
         </DesignIntent>
       </div>
 
       <SubNavRow />
+      <TodoStrip />
       <LegendRow />
       <WeatherStrip />
 
@@ -637,7 +653,7 @@ export function Dashboard() {
         </button>
       </div>
 
-      <div className="mb-6 grid grid-cols-4 gap-5">
+      <div className="mb-6 grid grid-cols-3 gap-5">
         <KpiCard
           label="오늘 접수"
           icon={<Inbox className="h-[18px] w-[18px]" />}
@@ -660,43 +676,36 @@ export function Dashboard() {
           value={`${todaySummary.avgDispatchSec}초`}
           note={`● 전주 대비 ${todaySummary.avgDispatchDeltaSec}초`}
         />
-        <KpiCard
-          label="검수 대기 (HITL)"
-          icon={<SearchCheck className="h-[18px] w-[18px]" />}
-          iconTone="danger"
-          value={String(todaySummary.hitlWaiting)}
-          unit="건"
-          note={`최대 대기 ${todaySummary.hitlMaxWaitMin}분 — 즉시 검수 필요`}
-          valueColor="#DC2626"
-        />
       </div>
 
-      <ProcessingBar />
+      <ProcessingFlow />
 
       <div className="mb-6 grid grid-cols-[1.5fr_1fr] gap-5">
-        <OrgTable />
+        <OrgBars />
         <OrgShareDonut />
       </div>
 
       <div className="mb-6 grid grid-cols-2 gap-5">
         <ProportionBars title="채널별 민원 현황" meta="3개 접수경로 통합 DB 기준" items={channelBreakdown} />
-        <ProportionBars title="민원 유형별 현황 (상위)" meta="급증 유형은 적색 표시 · 클릭 시 상위 20개 전체보기" items={complaintTypes} />
+        <ProportionBars
+          title="민원 유형별 현황 (상위)"
+          meta="급증 유형은 적색 표시"
+          items={complaintTypes}
+          footer={complaintComposition}
+        />
       </div>
 
       <div className="mb-6 grid grid-cols-[1.35fr_1fr] gap-5">
         <InflowChart line={line} onLineChange={setLine} />
-        <ConfidenceCard threshold={threshold} onThreshold={setThreshold} />
+        <ConfidenceTiersCard />
       </div>
 
       <div className="mb-6 grid grid-cols-[1.2fr_1fr] gap-5">
         <ExceptionQueueCard />
-        <LiveLogCard threshold={threshold} />
+        <LiveLogCard threshold={AUTO_DISPATCH_THRESHOLD} />
       </div>
 
-      <div className="grid grid-cols-[1fr_1.3fr] gap-5">
-        <ConfidenceBucketsCard />
-        <UrgentAlertsCard />
-      </div>
+      <UrgentAlertsCard />
 
       <FooterNote />
     </div>

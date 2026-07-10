@@ -1,4 +1,4 @@
-import { BellRing, BrainCog, CalendarClock, History, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { BarChart3, BellRing, BrainCog, CalendarClock, History, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { todaySummary } from "../../data/dashboard";
 
 const TABS = [
@@ -6,6 +6,7 @@ const TABS = [
   { key: "hitl", label: "예외 검수(HITL)", icon: ShieldCheck },
   { key: "history", label: "배부 이력조회", icon: History },
   { key: "alerts", label: "민원알림 센터", icon: BellRing },
+  { key: "insights", label: "경영 인사이트", icon: BarChart3 },
   { key: "forecast", label: "민원 사전예보", icon: CalendarClock },
   { key: "learning", label: "AI 학습현황", icon: BrainCog },
 ];
