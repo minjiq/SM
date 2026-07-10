@@ -9,7 +9,7 @@ export function AppShell({ active, onChange, children }) {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       <div className="flex h-16 items-center gap-8 bg-white px-8 shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]">
-        <img src="/logo.svg" alt="서울교통공사" className="h-6 w-auto shrink-0" />
+        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="서울교통공사" className="h-6 w-auto shrink-0" />
         <nav className="flex gap-6 text-[13px] font-medium text-[#64748B]">
           <span>이용정보</span>
           <span>안전환경</span>
