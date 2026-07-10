@@ -118,13 +118,17 @@ export const todaySummary = {
 };
 
 export const weatherToday = {
+  city: "서울",
+  rainChance: 5,
+  temp: 35,
   headline: "폭염특보 발효 · 최고 35°C",
   impact: "냉방 민원 급증 · 내일 장마 누수·미끄럼 주의",
+  icon: "sun-cloud",
   days: [
-    { label: "오늘", temp: 35, icon: "sun" },
-    { label: "금", temp: 36, icon: "sun" },
-    { label: "토", temp: 28, icon: "rain" },
-    { label: "일", temp: 27, icon: "cloud" },
+    { label: "오늘", temp: 35, icon: "sun-cloud" },
+    { label: "금", temp: 36, icon: "sun-cloud" },
+    { label: "토", temp: 28, icon: "thunder-cloud" },
+    { label: "일", temp: 27, icon: "thunder-cloud" },
   ],
 };
 

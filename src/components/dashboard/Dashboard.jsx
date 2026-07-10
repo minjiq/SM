@@ -1,19 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  ArrowUpDown,
-  Bot,
-  CalendarDays,
-  Cloud,
-  CloudRain,
-  Inbox,
-  Sun,
-  Timer,
-} from "lucide-react";
+import { AlertTriangle, ArrowRight, ArrowUpDown, Bot, CalendarDays, Inbox, Timer } from "lucide-react";
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Badge, Card, Chip, IconChip, KpiCard } from "../primitives";
-import { DesignIntent } from "./RationaleNote";
+import { Badge, Card, Chip, KpiCard } from "../primitives";
 import {
   aiProcessing,
   channelBreakdown,
@@ -33,19 +21,10 @@ import {
   weatherToday,
 } from "../../data/dashboard";
 
-const WEATHER_ICON = { sun: Sun, rain: CloudRain, cloud: Cloud };
+const WEATHER_ICON_SRC = (name) => `${import.meta.env.BASE_URL}weather/${name}.svg`;
 const STATUS_TONE = { 양호: "green", 주의: "amber", 점검: "red" };
-const TODO_BOX_TONE = {
-  red: "border-[#F3C6C6] bg-[#FDF6F6]",
-  amber: "border-[#F0D9B8] bg-[#FDFAF4]",
-  green: "border-[#BFDCC1] bg-[#F6FAF6]",
-};
 const TODO_COUNT_TONE = { red: "text-[#DC2626]", amber: "text-[#B45309]", green: "text-[#059669]" };
-const TODO_BTN_TONE = {
-  red: "bg-[#DC2626] text-white",
-  amber: "bg-[#B45309] text-white",
-  green: "border border-[#059669] text-[#059669]",
-};
+const TODO_TEXT_TONE = { red: "text-[#DC2626]", amber: "text-[#B45309]", green: "text-[#059669]" };
 
 function InflowTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -123,24 +102,21 @@ function SubNavRow() {
 
 function TodoStrip() {
   return (
-    <div className="mb-4 flex flex-wrap items-stretch gap-2.5">
-      <div className="flex shrink-0 items-center whitespace-nowrap rounded-[10px] bg-[#17288B] px-4 text-[13px] font-bold text-white">
-        지금 처리할 업무
-      </div>
-      {todoItems.map((item) => (
+    <div className="mb-5 flex flex-wrap items-center gap-x-9 gap-y-3">
+      {todoItems.map((item, i) => (
         <div
           key={item.label}
-          className={`flex min-w-0 flex-1 items-center gap-3 rounded-[10px] border px-4 py-2.5 text-[12.5px] ${TODO_BOX_TONE[item.tone]}`}
+          className={`flex items-center gap-2.5 text-[12.5px] ${i > 0 ? "border-l border-[#E2E8F0] pl-9" : ""}`}
         >
-          <span className="shrink-0 font-bold text-[#0F172A]">{item.label}</span>
-          <span className={`shrink-0 text-[19px] font-extrabold tabular-nums ${TODO_COUNT_TONE[item.tone]}`}>
+          <span className="font-bold text-[#0F172A]">{item.label}</span>
+          <span className={`text-[20px] font-extrabold tabular-nums leading-none ${TODO_COUNT_TONE[item.tone]}`}>
             {item.count}
             <span className="text-[12px] font-semibold">{item.unit}</span>
           </span>
-          <span className="min-w-0 truncate text-[11px] text-[#94A3B8]">{item.sub}</span>
+          <span className="text-[11px] text-[#94A3B8]">{item.sub}</span>
           <button
             type="button"
-            className={`ml-auto shrink-0 rounded-[6px] px-3 py-1.5 text-[11.5px] font-bold transition-transform active:scale-[0.96] ${TODO_BTN_TONE[item.tone]}`}
+            className={`text-[11.5px] font-bold transition-opacity hover:opacity-70 ${TODO_TEXT_TONE[item.tone]}`}
           >
             {item.action}
           </button>
@@ -170,44 +146,36 @@ function LegendRow() {
   );
 }
 
-function WeatherStrip() {
+function WeatherInline() {
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-3.5 rounded-[12px] bg-white px-5 py-3.5 text-[12.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
-      <IconChip tone="amber">
-        <Sun className="h-[17px] w-[17px]" />
-      </IconChip>
+    <div className="flex flex-wrap items-center gap-5">
+      <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-16 w-16 shrink-0 -my-2" />
       <div className="min-w-0">
-        <span className="font-semibold text-[#0F172A]">{weatherToday.headline}</span>
-        <span className="ml-2 text-[#64748B]">{weatherToday.impact}</span>
+        <div className="flex items-baseline gap-2">
+          <span className="text-[30px] font-extrabold leading-none tabular-nums text-[#0F172A]">{weatherToday.temp}°</span>
+          <span className="text-[13px] font-semibold text-[#0F172A]">{weatherToday.headline}</span>
+        </div>
+        <div className="mt-1 text-[11.5px] text-[#64748B]">{weatherToday.impact}</div>
       </div>
-      <div className="ml-auto flex items-center gap-4">
-        {weatherToday.days.map((d) => {
-          const Icon = WEATHER_ICON[d.icon];
-          return (
-            <span key={d.label} className="flex items-center gap-1.5">
-              <span className="text-[11px] text-[#94A3B8]">{d.label}</span>
-              <Icon className="h-3.5 w-3.5 text-[#B45309]" />
-              <span className="tabular-nums font-semibold text-[#0F172A]">{d.temp}°</span>
-            </span>
-          );
-        })}
+      <div className="ml-2 flex items-center gap-3.5 border-l border-[#0F172A]/10 pl-5">
+        {weatherToday.days.map((d) => (
+          <div key={d.label} className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] text-[#94A3B8]">{d.label}</span>
+            <img src={WEATHER_ICON_SRC(d.icon)} alt="" className="h-6 w-6" />
+            <span className="text-[11px] font-semibold tabular-nums text-[#0F172A]">{d.temp}°</span>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-function FlowBox({ label, value, sub, tone }) {
-  const toneClass =
-    tone === "green"
-      ? "border-[#9DC9A0] bg-[#F4FAF4]"
-      : tone === "muted"
-      ? "border-[#C9D0DA] bg-[#F7F8FA]"
-      : "border-[#CBD5E1] bg-white";
-  const valueClass = tone === "green" ? "text-[#2E7D32]" : "text-[#0F172A]";
+function FlowStep({ label, value, sub, tone }) {
+  const valueClass = tone === "green" ? "text-[#2E7D32]" : tone === "muted" ? "text-[#64748B]" : "text-[#0F172A]";
   return (
-    <div className={`min-w-[150px] rounded-[10px] border-[1.5px] px-4 py-3 text-center ${toneClass}`}>
-      <div className="mb-1 text-[11px] font-bold text-[#64748B]">{label}</div>
-      <div className={`whitespace-nowrap text-[19px] font-extrabold ${valueClass}`}>{value}</div>
+    <div className="min-w-[150px]">
+      <div className="mb-1 text-[11px] font-bold text-[#94A3B8]">{label}</div>
+      <div className={`whitespace-nowrap text-[22px] font-extrabold tabular-nums ${valueClass}`}>{value}</div>
       {sub ? <div className="mt-1 text-[10.5px] leading-[1.5] text-[#94A3B8]">{sub}</div> : null}
     </div>
   );
@@ -218,32 +186,32 @@ function ProcessingFlow() {
 
   return (
     <Card title="AI 처리 흐름" meta="각 상태별로 '무엇을 하면 되는지'가 함께 보이도록 구성" className="mb-6">
-      <div className="flex flex-wrap items-center gap-2">
-        <FlowBox label="① 접수" value={`${total.toLocaleString()}건`} sub="3개 채널 통합 유입" />
-        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
-        <FlowBox
+      <div className="flex flex-wrap items-center gap-5">
+        <FlowStep label="① 접수" value={`${total.toLocaleString()}건`} sub="3개 채널 통합 유입" />
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
+        <FlowStep
           label="② AI 분류 중 (미처리)"
           value={`${unprocessed}건`}
           sub={<>평균 {avgWaitSec}초 내 자동 소화<br /><span className="text-[#059669]">5분 초과 지연 0건 — 조치 불필요</span></>}
           tone="muted"
         />
-        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
-        <div className="min-w-[180px] flex-1">
-          <FlowBox label="③ 자동배부 완료" value={`${autoComplete.toLocaleString()}건 (89.5%)`} sub="담당부서 자동 전달 완료 — 조치 불필요" tone="green" />
-        </div>
-        <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8]" />
-        <div className="flex min-w-[220px] flex-1 flex-col gap-2">
-          <div className="flex items-center gap-2.5 rounded-[10px] border border-[#EEC089] bg-[#FDFAF4] px-3.5 py-2 text-[12px]">
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
+        <FlowStep label="③ 자동배부 완료" value={`${autoComplete.toLocaleString()}건 (89.5%)`} sub="담당부서 자동 전달 완료 — 조치 불필요" tone="green" />
+        <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
+        <div className="flex min-w-[240px] flex-1 flex-col gap-2.5">
+          <div className="flex items-center gap-2.5 text-[12.5px]">
+            <i className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#B45309]" />
             예외 검수 <b className="tabular-nums text-[#B45309]">{exception}건</b>
             <span className="text-[10.5px] text-[#94A3B8]">AI 확신 부족</span>
-            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#B45309] px-2.5 py-1 text-[10.5px] font-bold text-white">
+            <button type="button" className="ml-auto shrink-0 text-[11px] font-bold text-[#B45309] hover:underline">
               HITL 검수 →
             </button>
           </div>
-          <div className="flex items-center gap-2.5 rounded-[10px] border border-[#E5A3A3] bg-[#FDF6F6] px-3.5 py-2 text-[12px]">
+          <div className="flex items-center gap-2.5 text-[12.5px]">
+            <i className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />
             배부 실패 <b className="tabular-nums text-[#DC2626]">{failed}건</b>
             <span className="text-[10.5px] text-[#94A3B8]">자동 재시도 실패분</span>
-            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#DC2626] px-2.5 py-1 text-[10.5px] font-bold text-white">
+            <button type="button" className="ml-auto shrink-0 text-[11px] font-bold text-[#DC2626] hover:underline">
               재처리 →
             </button>
           </div>
@@ -618,26 +586,14 @@ export function Dashboard() {
 
   return (
     <div>
-      <div className="mb-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-[20px] font-bold tracking-[-0.02em] text-[#0F172A]">자동배부 대시보드</h1>
-          <p className="mt-1 text-[13px] text-[#64748B]">실시간 민원 자동배부 현황과 예외 처리 우선순위</p>
-        </div>
-        <DesignIntent
-          question={'"지금 개입해야 하는가"를 3초 안에 판단할 수 있는가'}
-          ids="관련 기능: DASH-001~006 · 010 · 012 | 지표: 자동배부율, 예외 큐 잔량, 배부 리드타임"
-        >
-          운영 관리자의 질문은 지표 나열이 아니라 <b className="text-white">개입 여부</b>다. "지금 처리할 업무" 스트립이
-          예외검수·재처리·지연을 한눈에 보여주고, 예외 큐는 접수순이 아닌 <b className="text-white">영향도 정렬</b>(안전 →
-          교통약자 → 법정기한)로 배치했다. AI 처리 흐름은 단순 숫자가 아니라{" "}
-          <b className="text-white">사람이 뭘 하면 되는지</b>를 함께 보여주도록 구성했다.
-        </DesignIntent>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
+        <h1 className="text-[20px] font-bold tracking-[-0.02em] text-[#0F172A]">자동배부 대시보드</h1>
+        <WeatherInline />
       </div>
 
       <SubNavRow />
       <TodoStrip />
       <LegendRow />
-      <WeatherStrip />
 
       <div className="mb-6 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
         <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
