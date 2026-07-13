@@ -208,7 +208,12 @@ function ProcessingFlow() {
 
   return (
     <Card
-      title="AI 처리 흐름"
+      title={
+        <>
+          <img src={`${import.meta.env.BASE_URL}icons/gemini.svg`} alt="" className="h-4 w-4" />
+          AI 처리 흐름
+        </>
+      }
       meta="각 상태별로 '무엇을 하면 되는지'가 함께 보이도록 구성"
       className="mb-6"
       style={{
