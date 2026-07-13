@@ -127,8 +127,8 @@ export const weatherToday = {
   days: [
     { label: "오늘", temp: 35, icon: "sun-cloud" },
     { label: "금", temp: 36, icon: "sun-cloud" },
-    { label: "토", temp: 28, icon: "thunder-cloud" },
-    { label: "일", temp: 27, icon: "thunder-cloud" },
+    { label: "토", temp: 28, icon: "rain-cloud" },
+    { label: "일", temp: 27, icon: "rain-cloud" },
   ],
 };
 
