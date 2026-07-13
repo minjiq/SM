@@ -59,17 +59,15 @@ function SubNavRow() {
   const periods = ["오늘", "주간", "월간", "연간"];
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[14px] bg-white px-4 py-3 shadow-[0_1px_3px_0_rgba(15,23,42,0.06)]">
       <div className="flex gap-2">
         {channels.map((c) => (
           <button
             key={c}
             type="button"
             onClick={() => setChannel(c)}
-            className={`rounded-[10px] px-4 py-2 text-[13px] font-semibold transition-colors ${
-              channel === c
-                ? "bg-[#122590] text-white"
-                : "bg-white text-[#64748B] shadow-[0_1px_3px_0_rgba(15,23,42,0.06)] hover:text-[#0F172A]"
+            className={`rounded-[8px] px-4 py-2 text-[13px] font-semibold transition-colors ${
+              channel === c ? "bg-[#122590] text-white" : "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]"
             }`}
           >
             {c}
@@ -77,7 +75,7 @@ function SubNavRow() {
         ))}
       </div>
       <div className="flex items-center gap-2.5">
-        <div className="flex rounded-full border border-[#E2E8F0] bg-white p-0.5">
+        <div className="flex rounded-full bg-[#F1F5F9] p-0.5">
           {periods.map((p) => (
             <button
               key={p}
@@ -91,7 +89,7 @@ function SubNavRow() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3.5 py-1.5 text-[12.5px] text-[#64748B]">
+        <div className="flex items-center gap-1.5 rounded-full bg-[#F1F5F9] px-3.5 py-1.5 text-[12.5px] text-[#64748B]">
           <CalendarDays className="h-3.5 w-3.5" />
           2026.07.10
         </div>
@@ -610,7 +608,10 @@ export function Dashboard() {
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
-        <h1 className="text-[20px] font-bold tracking-[-0.02em] text-[#0F172A]">자동배부 대시보드</h1>
+        <h1 className="flex items-center gap-2.5 text-[26px] font-extrabold tracking-[-0.03em] text-[#0F172A]">
+          <span className="h-6 w-[5px] rounded-full bg-[#122590]" />
+          자동배부 대시보드
+        </h1>
         <WeatherInline />
       </div>
 
