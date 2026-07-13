@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, ArrowRight, ArrowUpDown, Bot, CalendarDays, Inbox, Timer } from "lucide-react";
+import { AlertTriangle, ArrowRight, ArrowUpDown, Bot, CalendarDays, Inbox, Info, Timer } from "lucide-react";
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge, Card, Chip, KpiCard } from "../primitives";
 import {
@@ -159,11 +159,44 @@ function WeatherInline() {
   );
 }
 
-function FlowStep({ label, value, sub, tone }) {
+function InfoTip({ text, align = "left" }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <span className="relative inline-flex">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="설명 보기"
+        className={`grid h-4 w-4 shrink-0 place-items-center rounded-full transition-colors ${
+          open ? "bg-[#E9ECFA] text-[#122590]" : "text-[#94A3B8] hover:bg-[#F1F5F9] hover:text-[#64748B]"
+        }`}
+      >
+        <Info className="h-3 w-3" />
+      </button>
+      {open ? (
+        <>
+          <button type="button" aria-label="닫기" onClick={() => setOpen(false)} className="fixed inset-0 z-40 cursor-default" />
+          <div
+            className={`absolute top-[calc(100%+6px)] z-50 w-[230px] rounded-[10px] bg-[#101B4D] px-3.5 py-3 text-[11.5px] leading-[1.6] text-white/85 shadow-[0_16px_32px_-12px_rgba(11,42,71,0.5)] ${
+              align === "right" ? "right-0" : "left-0"
+            }`}
+          >
+            {text}
+          </div>
+        </>
+      ) : null}
+    </span>
+  );
+}
+
+function FlowStep({ label, value, sub, tone, info }) {
   const valueClass = tone === "green" ? "text-[#2E7D32]" : tone === "muted" ? "text-[#64748B]" : "text-[#0F172A]";
   return (
     <div className="min-w-[150px]">
-      <div className="mb-1 text-[11px] font-bold text-[#94A3B8]">{label}</div>
+      <div className="mb-1 flex items-center gap-1 text-[11px] font-bold text-[#94A3B8]">
+        {label}
+        {info ? <InfoTip text={info} /> : null}
+      </div>
       <div className={`whitespace-nowrap text-[22px] font-extrabold tabular-nums ${valueClass}`}>{value}</div>
       {sub ? <div className="mt-1 text-[10.5px] leading-[1.5] text-[#94A3B8]">{sub}</div> : null}
     </div>
@@ -194,41 +227,28 @@ function ProcessingFlow() {
           value={`${unprocessed}건`}
           sub={<>평균 {avgWaitSec}초 내 자동 소화<br /><span className="text-[#059669]">5분 초과 지연 0건 — 조치 불필요</span></>}
           tone="muted"
+          info="완료·미처리 → 기다리면 됨. 미처리는 AI가 초 단위로 처리하는 대기열. 5분 초과 시에만 '지연'으로 상단에 경고."
         />
         <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
         <FlowStep label="③ 자동배부 완료" value={`${autoComplete.toLocaleString()}건 (89.5%)`} sub="담당부서 자동 전달 완료 — 조치 불필요" tone="green" />
         <ArrowRight className="h-4 w-4 shrink-0 text-[#CBD5E1]" />
-        <div className="flex min-w-[240px] flex-1 flex-col gap-2.5">
-          <div className="flex items-center gap-2.5 text-[12.5px]">
+        <div className="flex min-w-[240px] flex-1 flex-col gap-2">
+          <div className="flex items-center gap-2.5 rounded-[8px] bg-[#FDFAF4] px-3 py-2 text-[12.5px] transition-colors hover:bg-[#FCF3E3]">
             <i className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#B45309]" />
             예외 검수 <b className="tabular-nums text-[#B45309]">{exception}건</b>
-            <span className="text-[10.5px] text-[#94A3B8]">AI 확신 부족</span>
-            <button type="button" className="ml-auto shrink-0 text-[11px] font-bold text-[#B45309] hover:underline">
+            <InfoTip text="예외 검수 → 사람이 판단. AI가 확신 못한 건. HITL 화면에서 승인/수정하면 AI가 재학습." align="right" />
+            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#B45309] px-2.5 py-1 text-[11px] font-bold text-white transition-transform active:scale-[0.96]">
               HITL 검수 →
             </button>
           </div>
-          <div className="flex items-center gap-2.5 text-[12.5px]">
+          <div className="flex items-center gap-2.5 rounded-[8px] bg-[#FDF6F6] px-3 py-2 text-[12.5px] transition-colors hover:bg-[#FBEAEA]">
             <i className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#DC2626]" />
             배부 실패 <b className="tabular-nums text-[#DC2626]">{failed}건</b>
-            <span className="text-[10.5px] text-[#94A3B8]">자동 재시도 실패분</span>
-            <button type="button" className="ml-auto shrink-0 text-[11px] font-bold text-[#DC2626] hover:underline">
+            <InfoTip text="배부 실패 → 사유 확인 후 조치. 담당부서 미매핑 9 · 신규유형 6 · 형식오류 3. [재처리] 클릭 시 자동 재시도." align="right" />
+            <button type="button" className="ml-auto shrink-0 rounded-[6px] bg-[#DC2626] px-2.5 py-1 text-[11px] font-bold text-white transition-transform active:scale-[0.96]">
               재처리 →
             </button>
           </div>
-        </div>
-      </div>
-      <div className="mt-5 grid grid-cols-3 gap-5 border-t border-dashed border-[#E2E8F0] pt-4 text-[11px] leading-[1.6] text-[#64748B]">
-        <div>
-          <b className="mb-0.5 block text-[#059669]">■ 완료·미처리 → 기다리면 됨</b>
-          미처리는 AI가 초 단위로 처리하는 대기열. 5분 초과 시에만 '지연'으로 상단에 경고.
-        </div>
-        <div>
-          <b className="mb-0.5 block text-[#B45309]">■ 예외 검수 → 사람이 판단</b>
-          AI가 확신 못한 건. HITL 화면에서 승인/수정하면 AI가 재학습.
-        </div>
-        <div>
-          <b className="mb-0.5 block text-[#DC2626]">■ 배부 실패 → 사유 확인 후 조치</b>
-          담당부서 미매핑 9 · 신규유형 6 · 형식오류 3. [재처리] 클릭 시 자동 재시도.
         </div>
       </div>
     </Card>
