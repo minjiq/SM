@@ -135,14 +135,19 @@ function TodoStrip() {
 
 function WeatherInline() {
   return (
-    <div className="flex flex-wrap items-center gap-5">
+    <div
+      className="flex flex-wrap items-center gap-5 rounded-[18px] px-5 py-2.5"
+      style={{
+        backgroundImage: "radial-gradient(320px 120px at 15% 40%, rgba(245,158,11,0.10), transparent 75%)",
+      }}
+    >
       <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-16 w-16 shrink-0 -my-2" />
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
           <span className="text-[30px] font-extrabold leading-none tabular-nums text-[#0F172A]">{weatherToday.temp}°</span>
           <span className="text-[13px] font-semibold text-[#0F172A]">{weatherToday.headline}</span>
         </div>
-        <div className="mt-1 text-[11.5px] text-[#64748B]">{weatherToday.impact}</div>
+        <div className="mt-1 text-[12.5px] font-medium text-[#B45309]">{weatherToday.impact}</div>
       </div>
       <div className="ml-2 flex items-center gap-3.5 border-l border-[#0F172A]/10 pl-5">
         {weatherToday.days.map((d) => (
@@ -190,13 +195,13 @@ function InfoTip({ text, align = "left" }) {
 function FlowStep({ label, value, sub, tone, info }) {
   const valueClass = tone === "green" ? "text-[#2E7D32]" : tone === "muted" ? "text-[#64748B]" : "text-[#0F172A]";
   return (
-    <div className="min-w-[150px]">
+    <div className="w-[176px] shrink-0 text-left">
       <div className="mb-1 flex items-center gap-1 text-[11px] font-bold text-[#94A3B8]">
         {label}
         {info ? <InfoTip text={info} /> : null}
       </div>
       <div className={`whitespace-nowrap text-[22px] font-extrabold tabular-nums ${valueClass}`}>{value}</div>
-      {sub ? <div className="mt-1 text-[10.5px] leading-[1.5] text-[#94A3B8]">{sub}</div> : null}
+      {sub ? <div className="mt-1.5 text-[10.5px] leading-[1.75] text-[#94A3B8]">{sub}</div> : null}
     </div>
   );
 }
@@ -616,10 +621,8 @@ export function Dashboard() {
       </div>
 
       <SubNavRow />
-      <TodoLabel />
-      <TodoStrip />
 
-      <div className="mb-6 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
+      <div className="mb-3 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
         <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
         <span className="text-[#0F172A]">
           예외 큐 잔량이 임계치(20건)를 초과했습니다. 현재 <b className="tabular-nums text-[#DC2626]">27건</b> 대기 중 — 안전
@@ -632,6 +635,9 @@ export function Dashboard() {
           예외 검수 화면 바로가기 →
         </button>
       </div>
+
+      <TodoLabel />
+      <TodoStrip />
 
       <div className="mb-6 grid grid-cols-3 gap-5">
         <KpiCard
