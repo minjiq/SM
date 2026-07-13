@@ -59,40 +59,43 @@ function SubNavRow() {
   const periods = ["오늘", "주간", "월간", "연간"];
 
   return (
-    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[14px] bg-white px-4 py-3 shadow-[0_1px_3px_0_rgba(15,23,42,0.06)]">
-      <div className="flex gap-2">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+      <div className="flex gap-6">
         {channels.map((c) => (
           <button
             key={c}
             type="button"
             onClick={() => setChannel(c)}
-            className={`rounded-[8px] px-4 py-2 text-[13px] font-semibold transition-colors ${
-              channel === c ? "bg-[#122590] text-white" : "text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]"
+            className={`border-b-2 pb-2 text-[14px] transition-colors ${
+              channel === c
+                ? "border-[#122590] font-bold text-[#122590]"
+                : "border-transparent font-semibold text-[#64748B] hover:text-[#0F172A]"
             }`}
           >
             {c}
           </button>
         ))}
       </div>
-      <div className="flex items-center gap-2.5">
-        <div className="flex rounded-full bg-[#F1F5F9] p-0.5">
+      <div className="flex items-center gap-4 pb-2 text-[13px]">
+        <div className="flex items-center gap-3.5">
           {periods.map((p) => (
             <button
               key={p}
               type="button"
               onClick={() => setPeriod(p)}
-              className={`rounded-full px-4 py-1.5 text-[12.5px] font-semibold transition-colors ${
-                period === p ? "bg-[#122590] text-white" : "text-[#64748B] hover:text-[#0F172A]"
+              className={`transition-colors ${
+                period === p ? "font-bold text-[#122590]" : "font-medium text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
               {p}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-[#F1F5F9] px-3.5 py-1.5 text-[12.5px] text-[#64748B]">
+        <span className="h-3.5 w-px bg-[#E2E8F0]" />
+        <span className="flex items-center gap-1.5 font-medium text-[#64748B]">
           <CalendarDays className="h-3.5 w-3.5" />
           2026.07.10
-        </div>
+        </span>
       </div>
     </div>
   );
@@ -133,26 +136,24 @@ function TodoStrip() {
   );
 }
 
-function WeatherInline() {
+function WeatherAlertBanner() {
   return (
-    <div className="flex flex-wrap items-center gap-5">
-      <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-16 w-16 shrink-0 -my-2" />
-      <div className="min-w-0">
-        <div className="flex items-baseline gap-2">
-          <span className="text-[30px] font-extrabold leading-none tabular-nums text-[#0F172A]">{weatherToday.temp}°</span>
-          <span className="text-[13px] font-semibold text-[#0F172A]">{weatherToday.headline}</span>
-        </div>
-        <div className="mt-1 text-[12.5px] font-medium text-[#B45309]">{weatherToday.impact}</div>
-      </div>
-      <div className="ml-2 flex items-center gap-3.5 border-l border-[#0F172A]/10 pl-5">
-        {weatherToday.days.map((d) => (
-          <div key={d.label} className="flex flex-col items-center gap-0.5">
-            <span className="text-[10px] text-[#94A3B8]">{d.label}</span>
-            <img src={WEATHER_ICON_SRC(d.icon)} alt="" className="h-6 w-6" />
-            <span className="text-[11px] font-semibold tabular-nums text-[#0F172A]">{d.temp}°</span>
-          </div>
-        ))}
-      </div>
+    <div className="mb-6 flex flex-wrap items-center gap-3.5 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
+      <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-9 w-9 shrink-0" />
+      <span className="shrink-0 font-extrabold text-[#B45309]">폭염특보 {weatherToday.temp}°C</span>
+      <span className="shrink-0 text-[#B45309]">{weatherToday.impact.split(" · ")[0]}</span>
+      <span className="h-4 w-px shrink-0 bg-[#DC2626]/25" />
+      <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
+      <span className="text-[#0F172A]">
+        예외 큐 잔량이 임계치(20건)를 초과했습니다. 현재 <b className="tabular-nums text-[#DC2626]">27건</b> 대기 중 — 안전
+        플래그 1건 · 법정기한 임박 2건 포함
+      </span>
+      <button
+        type="button"
+        className="ml-auto shrink-0 rounded-[10px] border border-[#DC2626] px-4 py-2.5 text-[13px] font-semibold text-[#DC2626] transition-all hover:bg-[#DC2626] hover:text-white active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626]/40 focus-visible:ring-offset-2"
+      >
+        예외 검수 화면 바로가기 →
+      </button>
     </div>
   );
 }
@@ -607,30 +608,8 @@ export function Dashboard() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
-        <h1 className="flex items-center gap-2.5 text-[26px] font-extrabold tracking-[-0.03em] text-[#0F172A]">
-          <span className="h-6 w-[5px] rounded-full bg-[#122590]" />
-          자동배부 대시보드
-        </h1>
-        <WeatherInline />
-      </div>
-
       <SubNavRow />
-
-      <div className="mb-3 flex items-center gap-4 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
-        <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
-        <span className="text-[#0F172A]">
-          예외 큐 잔량이 임계치(20건)를 초과했습니다. 현재 <b className="tabular-nums text-[#DC2626]">27건</b> 대기 중 — 안전
-          플래그 1건 · 법정기한 임박 2건 포함
-        </span>
-        <button
-          type="button"
-          className="ml-auto shrink-0 rounded-[10px] border border-[#DC2626] px-4 py-2.5 text-[13px] font-semibold text-[#DC2626] transition-all hover:bg-[#DC2626] hover:text-white active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#DC2626]/40 focus-visible:ring-offset-2"
-        >
-          예외 검수 화면 바로가기 →
-        </button>
-      </div>
-
+      <WeatherAlertBanner />
       <TodoLabel />
       <TodoStrip />
 
