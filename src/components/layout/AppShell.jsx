@@ -56,7 +56,7 @@ export function AppShell({ active, onChange, children }) {
           className="min-w-0 flex-1 px-8 py-8 pb-20"
           style={{
             backgroundImage:
-              "radial-gradient(1100px 460px at 50% -80px, rgba(23,40,139,0.10), transparent 70%)",
+              "radial-gradient(1200px 480px at 50% -60px, rgba(23,40,139,0.15), transparent 72%)",
             backgroundRepeat: "no-repeat",
           }}
         >
