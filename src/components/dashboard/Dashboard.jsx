@@ -135,12 +135,7 @@ function TodoStrip() {
 
 function WeatherInline() {
   return (
-    <div
-      className="flex flex-wrap items-center gap-5 rounded-[18px] px-5 py-2.5"
-      style={{
-        backgroundImage: "radial-gradient(320px 120px at 15% 40%, rgba(245,158,11,0.10), transparent 75%)",
-      }}
-    >
+    <div className="flex flex-wrap items-center gap-5">
       <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-16 w-16 shrink-0 -my-2" />
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
