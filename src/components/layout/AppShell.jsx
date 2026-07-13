@@ -41,7 +41,7 @@ export function AppShell({ active, onChange, children }) {
                 key={tab.key}
                 type="button"
                 onClick={() => onChange(tab.key)}
-                className={`mx-3 flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13.5px] font-medium transition-colors ${
+                className={`mx-3 flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[13.5px] font-medium tracking-[-0.01em] transition-colors ${
                   isActive ? "bg-white/14 font-semibold text-white" : "text-white/60 hover:bg-white/8 hover:text-white/90"
                 }`}
               >
