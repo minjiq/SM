@@ -136,20 +136,24 @@ function TodoStrip() {
   );
 }
 
-function WeatherAlertBanner() {
+function WeatherHeadline() {
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-5 rounded-[16px] bg-[#FEF2F2] px-6 py-3.5 shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
-      <div className="flex shrink-0 items-center gap-2.5">
-        <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-12 w-12 shrink-0" />
-        <div className="flex items-baseline gap-1.5 whitespace-nowrap">
-          <span className="text-[26px] font-extrabold leading-none tabular-nums text-[#0F172A]">{weatherToday.temp}°</span>
-          <span className="text-[13px] font-bold text-[#B45309]">폭염특보</span>
-          <span className="text-[12px] font-medium text-[#B45309]/80">({weatherToday.impact.split(" · ")[0]})</span>
-        </div>
+    <div className="flex shrink-0 items-center gap-3.5">
+      <img src={WEATHER_ICON_SRC(weatherToday.icon)} alt="" className="h-14 w-14 shrink-0 -my-1.5" />
+      <div>
+        <div className="text-[40px] font-extrabold leading-none tabular-nums text-[#0F172A]">{weatherToday.temp}°</div>
+        <div className="mt-1.5 text-[12.5px] font-bold leading-tight text-[#B45309]">폭염특보 발효</div>
+        <div className="text-[11px] leading-tight text-[#94A3B8]">{weatherToday.impact}</div>
       </div>
-      <span className="h-10 w-px shrink-0 bg-[#CBD5E1]" />
+    </div>
+  );
+}
+
+function ExceptionAlertBanner() {
+  return (
+    <div className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[16px] bg-[#FEF2F2] px-6 py-4 text-[13.5px] shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
       <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
-      <span className="text-[13.5px] text-[#0F172A]">
+      <span className="text-[#0F172A]">
         예외 큐 잔량이 임계치(20건)를 초과했습니다. 현재 <b className="tabular-nums text-[#DC2626]">27건</b> 대기 중 — 안전
         플래그 1건 · 법정기한 임박 2건 포함
       </span>
@@ -614,7 +618,12 @@ export function Dashboard() {
   return (
     <div>
       <SubNavRow />
-      <WeatherAlertBanner />
+
+      <div className="mb-6 flex flex-wrap items-center gap-6">
+        <WeatherHeadline />
+        <ExceptionAlertBanner />
+      </div>
+
       <TodoLabel />
       <TodoStrip />
 
