@@ -1,14 +1,11 @@
-import { BarChart3, BellRing, BrainCog, CalendarClock, History, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { BarChart3, CalendarClock, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { todaySummary } from "../../data/dashboard";
 
 const TABS = [
   { key: "dashboard", label: "운영 대시보드", icon: LayoutDashboard },
-  { key: "hitl", label: "예외 검수(HITL)", icon: ShieldCheck },
-  { key: "history", label: "배부 이력조회", icon: History },
-  { key: "alerts", label: "민원알림 센터", icon: BellRing },
-  { key: "insights", label: "경영 인사이트", icon: BarChart3 },
+  { key: "hitl", label: "HITL 예외 검수", icon: ShieldCheck, badge: todaySummary.hitlWaiting },
+  { key: "insights", label: "경영진 인사이트", icon: BarChart3 },
   { key: "forecast", label: "민원 사전예보", icon: CalendarClock },
-  { key: "learning", label: "AI 학습현황", icon: BrainCog },
 ];
 
 export function AppShell({ active, onChange, children }) {
@@ -46,7 +43,12 @@ export function AppShell({ active, onChange, children }) {
                 }`}
               >
                 <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.75} />
-                {tab.label}
+                <span className="flex-1 text-left">{tab.label}</span>
+                {tab.badge ? (
+                  <span className="rounded-full bg-[#DC2626] px-[6px] py-[1px] text-[10px] font-bold tabular-nums text-white">
+                    {tab.badge}
+                  </span>
+                ) : null}
               </button>
             );
           })}
