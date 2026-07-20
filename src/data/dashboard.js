@@ -213,6 +213,170 @@ export const receiptTimeline = [
   { time: "10:15", count: 232, peak: false },
 ];
 
+export const pipelineStages = [
+  {
+    n: "1단계",
+    label: "민원 접수",
+    value: "3,412건",
+    tone: "done",
+    desc: "콜센터·또타24·홈페이지·국민신문고 실시간 수집",
+    sub: "응급상황 3건 → 관제·보안관·112 동시 공유됨",
+  },
+  {
+    n: "2단계",
+    label: "분류·배정",
+    value: "45건 진행 중",
+    tone: "hot",
+    desc: "배정 완료 3,367 · 🔔 HITL 수동검토 4건 — 지금 검토 →",
+    sub: "타기관 자동이첩 41건 (코레일 18 · 응답소 14 · 9호선 9)",
+  },
+  {
+    n: "3단계",
+    label: "현장 조치",
+    value: "389건 조치 중",
+    tone: "default",
+    desc: "실시간 즉각조치 214 (냉난방·소란 등)",
+    sub: "시설 보수·법적/기술 검토 175",
+  },
+  {
+    n: "4단계",
+    label: "답변 결재",
+    value: "38건 대기",
+    tone: "warm",
+    desc: "팀장·부서장 승인 대기",
+    sub: "24h 초과 6건 — 결재자 자동 독촉 발송",
+  },
+  {
+    n: "5단계",
+    label: "결과 통보",
+    value: "2,940건 완료",
+    tone: "done",
+    desc: "문자·알림톡·이메일 자동 발송",
+    sub: "양방향 모니터링 공개 · 만족도 4.2/5.0",
+  },
+];
+
+export const pipelineStack = [
+  { label: "통보 완료", count: 2940, pct: 86.2, color: "#34D399" },
+  { label: "조치 중", count: 389, pct: 11.4, color: "#60A5FA" },
+  { label: "결재 대기", count: 38, pct: 1.1, color: "#FBBF24" },
+  { label: "타기관 이첩", count: 41, pct: 1.2, color: "#94A3B8" },
+  { label: "수동검토", count: 4, pct: 0.1, color: "#EF4444" },
+];
+
+export const aiBriefing =
+  '오늘 민원 3,412건 (전일 대비 +18%). 2호선 강남 냉방 민원 급증(+340%)이 주요 원인입니다. 병목은 4단계 답변 결재(24h 초과 6건)와 기술센터(3호선) 과부하 — 결재 독촉과 인력 재배치를 권고합니다. 기한초과 5건 중 2건은 지연사유서 미제출 상태입니다.';
+
+export const deadlineNotes = [
+  { title: "역무원 응대 불만 · 법적언급", id: "26-58077", owner: "고객서비스처 홍길동", due: "기한 초과 D+1", overdue: true },
+  { title: "휠체어 리프트 고장 (충무로역)", id: "26-58110", owner: "기술센터3 박민준", due: "오늘 10:00 마감" },
+  { title: "신도림 환승통로 누수", id: "26-58091", owner: "토목처 김철수", due: "오늘 13:00 마감" },
+  { title: "시설물 파손 (출입구 계단)", id: "26-57912", owner: "토목처 김철수", due: "오늘 14:30 마감" },
+  { title: "에스컬레이터 역주행 소음", id: "26-58044", owner: "기술센터5 이영희", due: "오늘 15:00 마감" },
+  { title: "정기권 환불 요청", id: "26-58060", owner: "영업처 최수진", due: "오늘 17:00 마감" },
+  { title: "환불 지연 재문의", id: "26-57988", owner: "영업처 최수진", due: "오늘 17:00 마감" },
+];
+
+export const priorityTop = [
+  { stars: 5, id: "26-58077", title: "역무원 응대 불만 · 법적언급", dept: "고객서비스처 · 홍길동", due: "기한초과 D+1", sla: "r", stage: "2단계 수동검토" },
+  { stars: 5, id: "26-57889", title: "스크린도어 오작동 신고", dept: "승강장안전문관리단", due: "기한초과 D+2", sla: "r", stage: "3단계 조치 중" },
+  { stars: 5, id: "26-58110", title: "휠체어 리프트 고장 (충무로)", dept: "기술센터3 · 박민준", due: "오늘 10:00", sla: "y", stage: "2단계 수동검토" },
+  { stars: 4, id: "26-58091", title: "신도림 환승통로 누수", dept: "토목처 · 김철수", due: "오늘 13:00", sla: "y", stage: "2단계 수동검토" },
+  { stars: 4, id: "26-57912", title: "시설물 파손 (출입구 계단)", dept: "토목처 · 김철수", due: "오늘 14:30", sla: "y", stage: "4단계 결재 대기" },
+  { stars: 4, id: "26-58044", title: "에스컬레이터 역주행 소음", dept: "기술센터5 · 이영희", due: "오늘 15:00", sla: "y", stage: "2단계 승인대기" },
+  { stars: 3, id: "26-58060", title: "정기권 환불 요청", dept: "영업처 · 최수진", due: "오늘 17:00", sla: "y", stage: "2단계 승인대기" },
+  { stars: 3, id: "26-57988", title: "환불 지연 재문의", dept: "영업처 · 최수진", due: "오늘 17:00", sla: "y", stage: "4단계 결재 대기" },
+  { stars: 3, id: "26-58031", title: "혼잡 안전 우려 (9호선)", dept: "영업사업소 · 정우성", due: "내일 09:00", sla: "g", stage: "3단계 조치 중" },
+  { stars: 3, id: "26-58012", title: "객실 와이파이 불량", dept: "정보통신처", due: "내일 15:00", sla: "g", stage: "3단계 조치 중" },
+];
+export const priorityCounts = { r: 5, y: 37, g: 1842 };
+
+export const aiActions = [
+  {
+    tag: "긴급",
+    tone: "red",
+    title: "🔁 담당자 변경 추천",
+    flow: "기술센터(3호선) — 2시간 후 SLA 초과 예상 (#26-58110 리프트 고장) → 기술센터(4호선) 교차출동으로 변경 추천",
+    effect: "예상 처리시간 3.1h → 1.9h (−1.2h) · SLA 초과 회피",
+    action: "적용",
+  },
+  {
+    tag: "권고",
+    tone: "amber",
+    title: "⚖️ 재배부 시뮬레이션",
+    flow: "홍길동(54건, 지연 3) → 김철수(21건)에게 5건 이동 시",
+    effect: "SLA 준수율 96.2% → 98.8% · 18시 지연 예상 11건 → 4건",
+    action: "시뮬레이션 적용",
+  },
+  {
+    tag: "4단계",
+    tone: "amber",
+    title: "📝 결재 병목 해소",
+    flow: "답변 결재 24h 초과 6건 — 결재자 3명 부재(출장) 감지 → 대결(代決) 라인 전환 추천",
+    effect: "결재 대기 38건 → 예상 12건 (금일 내)",
+    action: "대결 전환",
+  },
+  {
+    tag: "효율",
+    tone: "blue",
+    title: "📦 반복민원 일괄 처리",
+    flow: "2호선 냉방 87건 (+340%) — 이벤트 케이스 병합, 표준 프로세스 일괄 배부",
+    effect: "개별 배부 대비 약 43분 절감 · 답변 일괄 발송",
+    action: "일괄배부 승인",
+  },
+];
+
+export const workloadByPerson = [
+  { name: "홍길동 · 고객서비스처", holding: 54, avgDays: "5.4일", delay: 3, doneToday: 11, over: true },
+  { name: "박민준 · 기술센터3", holding: 41, avgDays: "4.1일", delay: 2, doneToday: 9, over: true },
+  { name: "김철수 · 토목처", holding: 21, avgDays: "3.0일", delay: 0, doneToday: 8, over: false },
+  { name: "이영희 · 기술센터5", holding: 26, avgDays: "3.4일", delay: 0, doneToday: 7, over: false },
+  { name: "최수진 · 영업처", holding: 18, avgDays: "2.6일", delay: 0, doneToday: 10, over: false },
+];
+export const workloadByDept = [
+  { name: "기술센터 (시설/전기)", holding: 412, avgDays: "5.8일", delay: 2, doneToday: 86, over: true },
+  { name: "고객서비스처", holding: 298, avgDays: "4.2일", delay: 2, doneToday: 64, over: true },
+  { name: "역무운영처", holding: 254, avgDays: "3.9일", delay: 1, doneToday: 51, over: false },
+  { name: "영업처 (유실물/환불)", holding: 231, avgDays: "2.7일", delay: 0, doneToday: 58, over: false },
+  { name: "차량처 (냉난방 제어)", holding: 167, avgDays: "2.2일", delay: 0, doneToday: 49, over: false },
+];
+
+export const delayBottleneck = [
+  { label: "담당자 부재/과부하", pct: 32, count: 13, color: "#F87171" },
+  { label: "현장출동 대기", pct: 24, count: 10, color: "#FB923C" },
+  { label: "부품 대기", pct: 18, count: 8, color: "#FBBF24" },
+  { label: "결재 지연", pct: 15, count: 6, color: "#60A5FA" },
+  { label: "타기관 협조", pct: 11, count: 5, color: "#94A3B8" },
+];
+
+export const aiOpsKpis = [
+  { label: "자동배부율", value: "87.3%", tone: "up" },
+  { label: "자동종결율", value: "74.2%", tone: "up" },
+  { label: "배부 정확도 (재배부율 2.4%)", value: "96.1%" },
+  { label: "이첩 정확도", value: "98.2%" },
+];
+
+export const stationHotspots = [
+  { rank: 1, station: "강남 (2호선)", count: 412, density: 100, prevChange: "▲2", keywords: "냉방 · 혼잡" },
+  { rank: 2, station: "신도림 (1·2호선)", count: 367, density: 88, prevChange: "—", keywords: "누수 · 환승동선" },
+  { rank: 3, station: "잠실 (2·8호선)", count: 341, density: 81, prevChange: "▲4", keywords: "혼잡 · 행사" },
+  { rank: 4, station: "홍대입구 (2호선)", count: 288, density: 69, prevChange: "▼1", keywords: "취객 · 소음" },
+  { rank: 5, station: "충무로 (3·4호선)", count: 245, density: 58, prevChange: "▲1", keywords: "승강설비" },
+];
+
+export const weatherForecastLines = [
+  { label: "☀️ 34°C 폭염경보", value: "냉방 +320건 예상" },
+  { label: "오후 소나기 60%", value: "누수·미끄럼 +40건" },
+  { label: "18시 잠실 콘서트", value: "9호선 혼잡 +120%" },
+];
+
+export const channelBreakdownV2 = [
+  { label: "또타24 챗봇", count: 1297, pct: 38 },
+  { label: "국민신문고/응답소", count: 989, pct: 29 },
+  { label: "고객센터", count: 602, pct: 18 },
+  { label: "자체 홈페이지", count: 524, pct: 15 },
+];
+
 export const urgentAlerts = [
   {
     pinned: true,
